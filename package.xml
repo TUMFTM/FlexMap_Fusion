@@ -1,0 +1,31 @@
+<?xml version="1.0"?>
+<?xml-model href="http://download.ros.org/schema/package_format3.xsd" schematypens="http://www.w3.org/2001/XMLSchema"?>
+<package format="3">
+  <name>tum_lanelet2_osm_fusion</name>
+  <version>0.0.0</version>
+  <description>Package to improve erroneous lanelet2 map from vehicle-centric algorithms with OpenStreetMap data</description>
+  <maintainer email="maxi.leitenstern@tum.de">Maximilian Leitenstern</maintainer>
+  <license>Apache License 2.0</license>
+
+  <buildtool_depend>ament_cmake_auto</buildtool_depend>
+  <buildtool_depend>eigen3_cmake_module</buildtool_depend>
+
+  <build_depend>eigen</build_depend>
+
+  <depend>geometry_msgs</depend>
+  <depend>lanelet2_extension</depend>
+  <depend>libpcl-all-dev</depend>
+  <depend>pcl_conversions</depend>
+  <depend>rclcpp</depend>
+  <depend>rclcpp_components</depend>
+  <depend>visualization_msgs</depend>
+  <!-- <depend>curl</depend> -->
+
+  <!-- <test_depend>ament_lint_auto</test_depend>
+  <test_depend>ament_lint_common</test_depend> -->
+  <test_depend>autoware_lint_common</test_depend>
+
+  <export>
+    <build_type>ament_cmake</build_type>
+  </export>
+</package>
