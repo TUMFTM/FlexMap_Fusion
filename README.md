@@ -1,6 +1,17 @@
 # tum_lanelet2_osm_fusion
 
-[[_TOC_]]
+<!-- [[_TOC_]] -->
+
+- [tum\_lanelet2\_osm\_fusion](#tum_lanelet2_osm_fusion)
+  - [Overview](#overview)
+  - [Configuration](#configuration)
+    - [Integration in Autoware](#integration-in-autoware)
+    - [Setup](#setup)
+  - [How to use the package](#how-to-use-the-package)
+  - [Test Data](#test-data)
+  - [Visualization](#visualization)
+  - [Content](#content)
+  - [Contact person](#contact-person)
 
 ## Overview
 
