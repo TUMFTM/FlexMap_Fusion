@@ -12,6 +12,7 @@
   - [Visualization](#visualization)
   - [Content](#content)
   - [Contact person](#contact-person)
+  - [Citation](#citation)
 
 ## Overview
 
@@ -112,3 +113,16 @@ Detailed documentation of the modules can be found below.
 ## Contact person
 
 [Maximilian Leitenstern](mailto:maxi.leitenstern@tum.de)
+
+## Citation
+
+If you use this repository for any academic work, please cite our original paper:
+
+```bibtex
+@inproceedings{sauerbeck2022edgar_maploc,
+  title={Multi-LiDAR Localization and Mapping Pipeline for Urban Autonomous Driving},
+  author={\textbf{Sauerbeck, Florian} and Kulmer, Dominik and Leitenstern, Maximilian and Weiss, Christoph and Betz, Johannes},
+  booktitle={2023 IEEE Sensors},
+  year={2023},
+}
+```
