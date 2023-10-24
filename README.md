@@ -1,16 +1,30 @@
 # tum_lanelet2_osm_fusion
 
-[[_TOC_]]
+<!-- [[_TOC_]] -->
+
+- [tum\_lanelet2\_osm\_fusion](#tum_lanelet2_osm_fusion)
+  - [Overview](#overview)
+  - [Configuration](#configuration)
+    - [Integration in Autoware](#integration-in-autoware)
+    - [Setup](#setup)
+  - [How to use the package](#how-to-use-the-package)
+  - [Test Data](#test-data)
+  - [Visualization](#visualization)
+  - [Content](#content)
+  - [Contact person](#contact-person)
+  - [Citation](#citation)
 
 ## Overview
 
 ![image](doc/img/conflation_tool.png)
 
-## Contact person
-
-[Maximilian Leitenstern](mailto:maxi.leitenstern@tum.de)
-
 ## Configuration
+
+### Integration
+This package is designed as a standalone ROS2 package. For easier handling of dependencies, a docker environment is provided.
+
+
+### Setup
 
 Parameters used inside the package can be adjusted in `/config/lanelet2_osm.param.yaml`.\
 Explanations on the parameters can be found in the comments and the documentation of the single [modules](#content).
@@ -34,24 +48,15 @@ Several ROS topics are published that can be visualized in RVIZ. The following t
 
 ## How to use the package
 
-1. Installation Development state:
+1. Installation:
 
-   - clone the repository
-   - pull development image
+   - within the docker environment, build the package by running
 
    ```shell
-       docker pull gitlab.lrz.de:5005/sensor-fusion-slam/scanmatcher/lanelet2_osm_fusion_img
+       colcon build --packages-up-to tum_lanelet2_osm_fusion --symlink-install --cmake-args -DCMAKE_BUILD_TYPE=Release
    ```
 
-   - run the docker image
-   ```shell
-       ./run_docker.sh
-   ```
-
-   - enter the container 
-   ```shell
-       docker exec -it fervent_archimedes bash 
-   ```
+   in the command window.
 
 2. Necessary input parameters:
    - `traj_path` => path to GPS trajectory of the vehicle (format: txt-file with lat, lon)
@@ -102,3 +107,21 @@ Detailed documentation of the modules can be found below.
 4. [Conflation](doc/conflation.md)
 
 5. [Analysis](doc/analysis.md)
+
+## Contact person
+
+[Maximilian Leitenstern](mailto:maxi.leitenstern@tum.de)
+
+
+## Citation
+
+If you use this repository for any academic work, please cite our original paper:
+
+```bibtex
+@inproceedings{sauerbeck2023,
+  title={Multi-LiDAR Localization and Mapping Pipeline for Urban Autonomous Driving},
+  author={\textbf{Sauerbeck, Florian} and Kulmer, Dominik and Leitenstern, Maximilian and Weiss, Christoph and Betz, Johannes},
+  booktitle={2023 IEEE Sensors},
+  year={2023},
+}
+```
