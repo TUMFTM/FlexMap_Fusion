@@ -400,7 +400,6 @@ void canalysis::write_lanelets_WGS84(
   std::ofstream file(file_path);
 
   // Get map origin and projector type
-  const std::string proj_type = node.get_parameter("proj_type").as_string();
   const double orig_lat = node.get_parameter("orig_lat").as_double();
   const double orig_lon = node.get_parameter("orig_lon").as_double();
 
@@ -410,28 +409,14 @@ void canalysis::write_lanelets_WGS84(
   if (file.is_open()) {
     for (const auto & ll : lls) {
       for (const auto & pt : ll.leftBound()) {
-        if (proj_type == "MGRS") {
-          lanelet::projection::MGRSProjector projector;
-          projector.setMGRSCode({position});
-          lanelet::GPSPoint pt_WGS84 = projector.reverse(pt.basicPoint());
-          file << std::setprecision(15) << pt_WGS84.lat << " " << pt_WGS84.lon << " ";
-        } else if (proj_type == "UTM") {
-          lanelet::projection::UtmProjector projector{orig};
-          lanelet::GPSPoint pt_WGS84 = projector.reverse(pt.basicPoint());
-          file << std::setprecision(15) << pt_WGS84.lat << " " << pt_WGS84.lon << " ";
-        }
+        lanelet::projection::UtmProjector projector{orig};
+        lanelet::GPSPoint pt_WGS84 = projector.reverse(pt.basicPoint());
+        file << std::setprecision(15) << pt_WGS84.lat << " " << pt_WGS84.lon << " ";
       }
       for (const auto & pt : ll.rightBound().invert()) {
-        if (proj_type == "MGRS") {
-          lanelet::projection::MGRSProjector projector;
-          projector.setMGRSCode({position});
-          lanelet::GPSPoint pt_WGS84 = projector.reverse(pt.basicPoint());
-          file << std::setprecision(15) << pt_WGS84.lat << " " << pt_WGS84.lon << " ";
-        } else if (proj_type == "UTM") {
           lanelet::projection::UtmProjector projector{orig};
           lanelet::GPSPoint pt_WGS84 = projector.reverse(pt.basicPoint());
           file << std::setprecision(15) << pt_WGS84.lat << " " << pt_WGS84.lon << " ";
-        }
       }
       file << std::endl;
     }

@@ -12,15 +12,21 @@ endif()
 
 # find dependencies
 find_package(ament_cmake REQUIRED)
-
 find_package(geometry_msgs REQUIRED)
+find_package(message_filters REQUIRED)
+find_package(pcl_msgs REQUIRED)
 find_package(visualization_msgs REQUIRED)
+find_package(sensor_msgs REQUIRED)
 find_package(rclcpp REQUIRED)
-find_package(lanelet2_extension REQUIRED)
 find_package(CURL REQUIRED)
 find_package(Eigen3 REQUIRED)
-find_package(PCL REQUIRED COMPONENTS io registration)
+find_package(lanelet2_core REQUIRED)
+find_package(lanelet2_io REQUIRED)
+find_package(lanelet2_projection REQUIRED)
+find_package(PCL 1.3 REQUIRED)
 
+include_directories(${pcl_msgs_INCLUDE_DIRS})
+include_directories(${message_filters_INCLUDE_DIRS})
 include_directories(${PCL_INCLUDE_DIRS})
 link_directories(${PCL_LIBRARY_DIRS})
 add_definitions(${PCL_DEFINITIONS})
@@ -41,7 +47,8 @@ target_include_directories(file_in
     $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include/tum_lanelet2_osm_fusion/file_io>
     $<INSTALL_INTERFACE:include>)
 
-ament_target_dependencies(file_in rclcpp lanelet2_extension CURL)
+ament_target_dependencies(file_in rclcpp CURL lanelet2_core lanelet2_io lanelet2_projection)
+target_link_libraries(file_in ${PCL_LIBRARIES})
 
 ####################################
 # file_out
@@ -57,7 +64,8 @@ target_include_directories(file_out
     $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include/tum_lanelet2_osm_fusion/file_io>
     $<INSTALL_INTERFACE:include>)
 
-ament_target_dependencies(file_out rclcpp lanelet2_extension)
+ament_target_dependencies(file_out rclcpp lanelet2_core lanelet2_io lanelet2_projection)
+target_link_libraries(file_out ${PCL_LIBRARIES})
 
 ####################################
 # extract_network
@@ -73,7 +81,7 @@ target_include_directories(extract_network
     $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include/tum_lanelet2_osm_fusion/extract_network>
     $<INSTALL_INTERFACE:include>)
 
-ament_target_dependencies(extract_network rclcpp lanelet2_extension)
+ament_target_dependencies(extract_network rclcpp lanelet2_core lanelet2_io lanelet2_projection)
 
 ####################################
 # map_transformation
@@ -90,8 +98,7 @@ target_include_directories(align
     $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include/tum_lanelet2_osm_fusion/map_transformation>
     $<INSTALL_INTERFACE:include>)
 
-ament_target_dependencies(align rclcpp Eigen3 lanelet2_extension)
-target_link_libraries(align ${PCL_LIBRARIES})
+ament_target_dependencies(align rclcpp Eigen3 lanelet2_core lanelet2_io lanelet2_projection)
 
 # Rubber-Sheeting
 add_library(rubber_sheeting SHARED
@@ -104,7 +111,7 @@ target_include_directories(rubber_sheeting
     $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include/tum_lanelet2_osm_fusion/map_transformation>
     $<INSTALL_INTERFACE:include>)
 
-ament_target_dependencies(rubber_sheeting rclcpp Eigen3 lanelet2_extension)
+ament_target_dependencies(rubber_sheeting rclcpp geometry_msgs Eigen3 lanelet2_core lanelet2_io lanelet2_projection)
 target_link_libraries(rubber_sheeting ${PCL_LIBRARIES})
 
 ####################################
@@ -122,7 +129,7 @@ target_include_directories(matching
     $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include/tum_lanelet2_osm_fusion/conflation>
     $<INSTALL_INTERFACE:include>)
 
-ament_target_dependencies(matching rclcpp Eigen3 lanelet2_extension)
+ament_target_dependencies(matching rclcpp Eigen3 lanelet2_core lanelet2_io lanelet2_projection)
 
 # Map conflation
 add_library(conflation SHARED
@@ -135,23 +142,50 @@ target_include_directories(conflation
     $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include/tum_lanelet2_osm_fusion/conflation>
     $<INSTALL_INTERFACE:include>)
 
-ament_target_dependencies(conflation rclcpp Eigen3 lanelet2_extension)
+ament_target_dependencies(conflation rclcpp Eigen3 lanelet2_core lanelet2_io lanelet2_projection)
 
 ####################################
 # messages
 ####################################
+# message conversion
+add_library(message_conversion SHARED
+  src/messages/message_conversion.cpp
+)
+
+target_include_directories(message_conversion
+  PUBLIC
+    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include/tum_lanelet2_osm_fusion>
+    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include/tum_lanelet2_osm_fusion/messages>
+    $<INSTALL_INTERFACE:include>)
+
+ament_target_dependencies(message_conversion rclcpp geometry_msgs visualization_msgs lanelet2_core lanelet2_io lanelet2_projection)
+
+add_library(visualization SHARED
+  src/messages/visualization.cpp
+)
+
+# visualization
+target_include_directories(visualization
+  PUBLIC
+    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include/tum_lanelet2_osm_fusion>
+    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include/tum_lanelet2_osm_fusion/messages>
+    $<INSTALL_INTERFACE:include>)
+
+ament_target_dependencies(visualization rclcpp geometry_msgs visualization_msgs lanelet2_core lanelet2_io lanelet2_projection)
 
 add_library(messages SHARED
   src/messages/messages.cpp
 )
 
+# messages
 target_include_directories(messages
   PUBLIC
     $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include/tum_lanelet2_osm_fusion>
     $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include/tum_lanelet2_osm_fusion/messages>
     $<INSTALL_INTERFACE:include>)
 
-ament_target_dependencies(messages rclcpp geometry_msgs visualization_msgs lanelet2_extension)
+target_link_libraries(messages message_conversion visualization ${PCL_LIBRARIES} ${message_filters_LIBRARIES} ${pcl_msgs_LIBRARIES})
+ament_target_dependencies(messages rclcpp geometry_msgs visualization_msgs lanelet2_core lanelet2_io lanelet2_projection)
 
 ####################################
 # analysis
@@ -167,12 +201,13 @@ target_include_directories(analysis
     $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include/tum_lanelet2_osm_fusion/analysis>
     $<INSTALL_INTERFACE:include>)
 
-ament_target_dependencies(analysis rclcpp Eigen3 lanelet2_extension)
+ament_target_dependencies(analysis rclcpp Eigen3 lanelet2_core lanelet2_io lanelet2_projection)
 
 ####################################
-# Main Executable
+# Main Executables
 ####################################
 
+# lanelet2_osm_fusion
 add_executable(lanelet2_osm
   src/lanelet2_osm.cpp
 )
@@ -182,9 +217,22 @@ target_include_directories(lanelet2_osm
     $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include/tum_lanelet2_osm_fusion>
     $<INSTALL_INTERFACE:include>)
 
-ament_target_dependencies(lanelet2_osm rclcpp geometry_msgs visualization_msgs lanelet2_extension)
+ament_target_dependencies(lanelet2_osm rclcpp geometry_msgs visualization_msgs lanelet2_core lanelet2_io lanelet2_projection)
 target_link_libraries(lanelet2_osm file_in file_out extract_network align rubber_sheeting
   matching conflation messages analysis)
+
+# kiss_icp_georef
+add_executable(kiss_icp_georef
+  src/kiss_icp_georef.cpp
+)
+
+target_include_directories(kiss_icp_georef
+  PUBLIC
+    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include/tum_lanelet2_osm_fusion>
+    $<INSTALL_INTERFACE:include>)
+
+ament_target_dependencies(kiss_icp_georef rclcpp geometry_msgs visualization_msgs lanelet2_core lanelet2_io lanelet2_projection)
+target_link_libraries(kiss_icp_georef file_in file_out align rubber_sheeting messages analysis)
 
 ####################################
 # Building
@@ -203,6 +251,8 @@ install(TARGETS
   rubber_sheeting
   matching
   conflation
+  message_conversion
+  visualization
   messages
   analysis
   DESTINATION lib
@@ -210,23 +260,12 @@ install(TARGETS
 
 install(TARGETS
   lanelet2_osm
+  kiss_icp_georef
   DESTINATION lib/${PROJECT_NAME})
 
 install(DIRECTORY
   config
   launch
   DESTINATION share/${PROJECT_NAME})
-
-if(BUILD_TESTING)
-  find_package(ament_lint_auto REQUIRED)
-  # the following line skips the linter which checks for copyrights
-  # comment the line when a copyright and license is added to all source files
-  # set(ament_cmake_copyright_FOUND TRUE)
-  # the following line skips cpplint (only works in a git repo)
-  # comment the line when this package is in a git repo and when
-  # a copyright and license is added to all source files
-  # set(ament_cmake_cpplint_FOUND TRUE)
-  ament_lint_auto_find_test_dependencies()
-endif()
 
 ament_package()

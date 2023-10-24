@@ -31,8 +31,6 @@
 #include <lanelet2_core/primitives/LineString.h>
 #include <lanelet2_core/primitives/Point.h>
 #include <pcl/io/pcd_io.h>
-#include <pcl/point_types.h>
-#include <pcl/registration/icp.h>
 
 #include <string>
 #include <vector>
@@ -48,7 +46,7 @@ public:
    **********************************************************************/
   bool get_transformation(
     rclcpp::Node & node, const lanelet::ConstLineString3d & src,
-    const lanelet::ConstLineString3d & target, Eigen::Matrix3d & trans, const std::string & type);
+    const lanelet::ConstLineString3d & target, Eigen::Matrix3d & trans);
 
   /*******************************************************************
    * Transform whole map according to transformation matrix
@@ -71,14 +69,6 @@ private:
     const lanelet::ConstLineString3d & src, const lanelet::ConstLineString3d & target,
     Eigen::Matrix3d & trans, rclcpp::Node & node);
 
-  /***********************************************************************
-   * Calculate transformation matrix according to ICP algorithm
-   * => from PCL (prior conversion of linestrings to point clouds)
-   ************************************************************************/
-  bool point_transformation_icp(
-    const lanelet::ConstLineString3d & src, const lanelet::ConstLineString3d & target,
-    Eigen::Matrix3d & trans);
-
   /*************************************************************************************
    * Transforming the coordinates of a point according to transformation matrix (2D)
    **************************************************************************************/
@@ -88,11 +78,6 @@ private:
    * Interpolation of linestring to linestring with defined number of points
    **********************************************************************************/
   Eigen::MatrixXd ls2interp_mat2d(const lanelet::ConstLineString3d & ls, const int & num);
-
-  /*********************************************************
-   * Convert linestring to pointcloud from pcl
-   **********************************************************/
-  bool ls2PC2d(const lanelet::ConstLineString3d & ls, pcl::PointCloud<pcl::PointXYZ>::Ptr & pc);
 
   /************************************************************************************
    * Extract intersection nodes (nodes with valence > 2) from openstreetmap-network

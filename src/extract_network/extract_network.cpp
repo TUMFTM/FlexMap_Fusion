@@ -41,19 +41,30 @@ cextract_network::cextract_network()
  ***********************************************************************/
 bool cextract_network::ll_map_extract(
   const lanelet::LaneletMapPtr & map_ptr, lanelet::ConstLanelets & all,
-  lanelet::ConstLanelets & regular, lanelet::ConstLanelets & shoulder,
-  std::vector<lanelet::ConstLineString3d> & stop_lines)
+  lanelet::ConstLanelets & regular, lanelet::ConstLanelets & shoulder)
 {
   // Get elements from lanelet map
-  // Lanelets
-  all = lanelet::utils::query::laneletLayer(map_ptr);
-  shoulder = lanelet::utils::query::shoulderLanelets(all);
+  // Extract all lanelets
+  for (const auto & ll : map_ptr->laneletLayer) {
+    all.push_back(ll);
+  }
+
+
+  // Extract shoulder lanelets
+  for (const auto & ll : all) {
+    if (ll.hasAttribute(lanelet::AttributeName::Subtype)) {
+      const lanelet::Attribute & attr = ll.attribute(lanelet::AttributeName::Subtype);
+      if (attr.value() == "road_shoulder") {
+        shoulder.push_back(ll);
+      }
+    }
+  }
+
+  // Extract regular lanelets
   const std::vector<std::string> regular_subtypes{
     "highway", "road", "play_street", "bus_lane", "bicycle_lane"};
   regular = subtype_lanelets(all, regular_subtypes);
 
-  // Stop lines and traffic lights
-  stop_lines = lanelet::utils::query::stopLinesLanelets(regular);
   return true;
 }
 
@@ -118,7 +129,7 @@ lanelet::LineStrings3d cextract_network::query_osm_network(
     const std::string val = linestring.attributeOr(key, "none");
 
     // Add linestring to output linestrings if it matches one of the provided values
-    for (const auto it : values) {
+    for (const auto & it : values) {
       if (val == it) {
         res.push_back(linestring);
       }

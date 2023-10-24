@@ -82,6 +82,13 @@ public:
     rclcpp::Node & node, const lanelet::Areas & tri, const std::vector<Eigen::Matrix3d> & trans,
     const Eigen::Matrix3d & trans_al);
 
+  /*********************************************************************************
+   * Transform corresponding pointcloud map according to SLAM poses - GPS traj
+   **********************************************************************************/
+  bool transform_pcd(
+    rclcpp::Node & node, const lanelet::Areas & tri, const std::vector<Eigen::Matrix3d> & trans,
+    const Eigen::Matrix3d & trans_al, pcl::PointCloud<pcl::PointXYZ>::Ptr & pcm);
+
 private:
   /**************************************************************
    * Find closest point on given linestring for given point

@@ -245,6 +245,43 @@ bool crubber_sheeting::transform_pcd(
   return true;
 }
 
+/*********************************************************************************
+ * Transform corresponding pointcloud map according to SLAM poses - GPS traj
+ **********************************************************************************/
+bool crubber_sheeting::transform_pcd(
+  rclcpp::Node & node, const lanelet::Areas & tri, const std::vector<Eigen::Matrix3d> & trans,
+  const Eigen::Matrix3d & trans_al, pcl::PointCloud<pcl::PointXYZ>::Ptr & pcm)
+{
+  // Get point cloud
+  pcl::PointCloud<pcl::PointXYZ> cloud = *pcm;
+  // Transform points and write into output cloud
+  int ind_pt = 0;
+  for (auto & point : cloud) {
+    // Align point with alignment transformation matrix
+    int i = 0;
+    const Eigen::Vector3d pt_(point.x, point.y, 1.0);
+    const Eigen::Vector3d pt_al = trans_al.inverse() * pt_;
+
+    // Create new, aligned point
+    lanelet::BasicPoint2d pt(pt_al(0), pt_al(1));
+
+    // Find area the point is in
+    for (auto & triangle : tri) {
+      if (lanelet::geometry::inside(triangle, pt)) {
+        // Rubber-sheet point
+        const Eigen::Vector3d pt_rs = trans[i] * pt_al;
+        cloud[ind_pt].x = pt_rs(0);
+        cloud[ind_pt].y = pt_rs(1);
+        cloud[ind_pt].z = point.z;
+        break;
+      }
+      ++i;
+    }
+    ++ind_pt;
+  }
+
+}
+
 /*****************/
 /*private methods*/
 /*****************/

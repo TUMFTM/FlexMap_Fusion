@@ -22,14 +22,18 @@
 
 #include "color.hpp"
 #include "utility.hpp"
+#include "message_conversion.hpp"
+#include "visualization.hpp"
 
-#include <lanelet2_extension/utility/message_conversion.hpp>
-#include <lanelet2_extension/utility/query.hpp>
-#include <lanelet2_extension/visualization/visualization.hpp>
 #include <rclcpp/rclcpp.hpp>
 
 #include <visualization_msgs/msg/marker.hpp>
 #include <visualization_msgs/msg/marker_array.hpp>
+
+#include <sensor_msgs/msg/point_cloud2.hpp>
+#include <pcl/point_cloud.h>
+#include <pcl/point_types.h>
+#include <pcl_conversions/pcl_conversions.h>
 
 #include <lanelet2_core/LaneletMap.h>
 #include <lanelet2_core/geometry/Point.h>
@@ -58,8 +62,7 @@ public:
    ****************************************************************************************/
   void map_net2marker_msg(
     rclcpp::Node & node, lanelet::ConstLanelets & all, lanelet::ConstLanelets & regular,
-    lanelet::ConstLanelets & shoulder, std::vector<lanelet::ConstLineString3d> & stop_lines,
-    visualization_msgs::msg::MarkerArray & map_marker_msg);
+    lanelet::ConstLanelets & shoulder, visualization_msgs::msg::MarkerArray & map_marker_msg);
 
   /***************************************************************************************
    * Insert road lanelets and shoulder lanelets into marker array with visualization
@@ -68,7 +71,7 @@ public:
    ****************************************************************************************/
   void col_map_net2marker_msg(
     rclcpp::Node & node, lanelet::ConstLanelets & all, lanelet::ConstLanelets & regular,
-    lanelet::ConstLanelets & shoulder, std::vector<lanelet::ConstLineString3d> & stop_lines,
+    lanelet::ConstLanelets & shoulder,
     const std::vector<std::pair<lanelet::Id, std::string>> & cols,
     visualization_msgs::msg::MarkerArray & map_marker_msg);
 
@@ -97,34 +100,16 @@ public:
     const lanelet::ConstLineStrings3d & ll_coll, const std::vector<s_match> & matches,
     visualization_msgs::msg::MarkerArray & msg);
 
-private:
-  /*****************************************************************************
-   * Convert areas (rubber-sheet triangles) to markerarray (new namespace for
-   * each triangle)
-   ******************************************************************************/
-  visualization_msgs::msg::MarkerArray areas2marker_msg(
-    const lanelet::Areas & areas, const std::string color, const std::string ns,
-    const float thickness);
+  void pcd_map2msg(
+    const pcl::PointCloud<pcl::PointXYZ>::Ptr & pcd_map, sensor_msgs::msg::PointCloud2 & msg);
 
+private:
   /*********************************************************************************
    * Convert controlpoints to markerarray (linestring from source to target point)
    **********************************************************************************/
   visualization_msgs::msg::MarkerArray controlpoints2marker_msg(
     const std::vector<s_control_point> & cps, const std::string color, const std::string ns,
     const float thickness);
-
-  /*********************************************************************************
-   * Convert lanelets into colored triangle based on color code from conflation
-   **********************************************************************************/
-  visualization_msgs::msg::MarkerArray colored_lanelets2marker_msg(
-    const std::string & ns_base, const lanelet::ConstLanelets & lls,
-    const std::vector<std::pair<lanelet::Id, std::string>> & cols);
-
-  /*************************************************************************************
-   * Convert areas to markerarray (visualization of the surface but with transparency)
-   **************************************************************************************/
-  visualization_msgs::msg::MarkerArray areas2marker_msg(
-    const lanelet::Areas & areas, const std::string & color, const std::string & ns);
 
   /***************************************************************************************
    * Convert reference or target polyline of match to markerarray with changing color
@@ -139,37 +124,6 @@ private:
   visualization_msgs::msg::MarkerArray match2marker_msg(
     const std::vector<s_match> & matches, const std::string color, const std::string ns,
     const float thickness);
-
-  /***************************************************************************
-   * Convert area to to a triangle for later conversion to markerarray
-   ****************************************************************************/
-  void area2triangle(
-    const lanelet::Area & ar, std::vector<geometry_msgs::msg::Polygon> * triangles);
-
-  /*****************************************************************************
-   * Convert an area to a polygon for later conversion to a triangle
-   ******************************************************************************/
-  void area2polygon(const lanelet::Area & ar, geometry_msgs::msg::Polygon * polygon);
-
-  /**********************************************************************************
-   * Set color of for a markerarray specified by string defining the color name
-   * from "color.hpp" and a defining the intensity
-   ***********************************************************************************/
-  void set_color(std_msgs::msg::ColorRGBA * color, const std::string & name, double a);
-
-  /**************************************************************
-   * Insert marker array at the end of another markerarray
-   ***************************************************************/
-  void insert_marker_array(
-    visualization_msgs::msg::MarkerArray * arr_src,
-    const visualization_msgs::msg::MarkerArray & arr_in);
-
-  /**********************************************
-   * Convert single linestring to markerarray
-   ***********************************************/
-  visualization_msgs::msg::MarkerArray linestring2marker_msg(
-    const lanelet::ConstLineString3d & ls, const std::string & ns,
-    const std_msgs::msg::ColorRGBA & c, const float lss);
 
   /******************************************************
    * Convert linestring into arrows at its points
@@ -218,9 +172,7 @@ private:
    *********************************************************************/
   lanelet::ConstLineStrings3d to_const(const lanelet::LineStrings3d & lss);
 
-  /**********************************************************************
-   * Get color code of a lanelet from conflation based on its id
-   ***********************************************************************/
-  std::string id2col(
-    const std::vector<std::pair<lanelet::Id, std::string>> & cols, const lanelet::Id & id);
+  // Initialize helper libraries
+  cmessage_conversion m_message_conversion;
+  cvisualization m_visualization;
 };

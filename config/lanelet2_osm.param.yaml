@@ -1,25 +1,21 @@
 /**:
   ros__parameters:
-    # Projection
-    proj_type: UTM                    # Projector type for converting GPS coordinates to local system. Options: UTM, MGRS (!!! MGRS not tested !!!)
-
     # Master file
     master: GPS                       # set map that is taken as reference, options: GPS, SLAM
 
     # Registration GPS/Poses
-    align_type: Umeyama               # Registration type for aligning Lanelet2 map (relative cosy) with OSM data (global). Options: ICP, Umeyama
     align_num_inter_ume: 500          # Number of interpolation points for Umeyama method (algorithm needs equivalent number of points)
-    rs_num_controlPoints: 2          # Number of control points for rubber-sheeting
+    rs_num_controlPoints: 1          # Number of control points for rubber-sheeting
 
     # Pointcloud transformation
     transform_pcd: false              # transform corresponding point cloud map to laneletmap if osm selected as master (align and rubber-sheet, only 2D)
     save_ascii: true                 # Safe .pcd file as: true - as ASCII file, false - as binary file
-    pcd_path: "/PATH_TO_PCD/sample.pcd"
+    pcd_path: "/home/marko/Documents/Indy/maps/v8_subsample.pcd"
 
     # GPS zero coordinate
     customZeroPoint: false            # false - use first GPS data as zero point, true - set custom zero point with zeroLat/zeroLong
-    zeroLat: 49.0174649        # Zero point latitude
-    zeroLong: 8.4680534        # Zero point longitude
+    zeroLat: 45.61989206965495        # Zero point latitude
+    zeroLong: 9.283415137392435       # Zero point longitude
 
     # Buffer-Growing - Parameters
     seg_len: 5.0                      # [m] maximum length of a segment, otherwise it's splitted
