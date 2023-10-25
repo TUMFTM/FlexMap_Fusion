@@ -18,6 +18,9 @@
 // ==========================================
 //
 //
+// NOTE: The functions "toGeomMsgPt" and "toGeomMsgPt32" are derived from the lanelet2_extension
+// package (https://github.com/autowarefoundation/autoware_common/tree/main/tmp/lanelet2_extension)
+//
 #pragma once
 
 #include "color.hpp"

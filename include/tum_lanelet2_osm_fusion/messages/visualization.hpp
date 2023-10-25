@@ -17,7 +17,10 @@
 // Date: 13.10.2023
 // ==========================================
 //
+// NOTE: The following functions are derived from the lanelet2_extension package
+// (https://github.com/autowarefoundation/autoware_common/tree/main/tmp/lanelet2_extension)
 //
+
 #pragma once
 
 #include "color.hpp"
