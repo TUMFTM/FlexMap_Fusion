@@ -35,7 +35,7 @@ def generate_launch_description():
 
     # Define command line args
     traj_path = DeclareLaunchArgument(
-        "traj_path", default_value=TextSubstitution(text="test/Route_1_GPS.txt")
+        "traj_path", default_value=TextSubstitution(text="test/route_1_GPS.txt")
     )
     poses_path = DeclareLaunchArgument(
         "poses_path", default_value=TextSubstitution(text="test/route1_pose_kitti.txt")

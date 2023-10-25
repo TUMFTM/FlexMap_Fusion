@@ -11,6 +11,7 @@ ENV PACKAGE_NAME=tum_lanelet2_osm_fusion
 # Install RViz and additional dependencies
 RUN apt-get update && apt-get install -y \
     ros-$ROS_DISTRO-rviz2 \
+    vim \
     && rm -rf /var/lib/apt/lists/*
 
 # Copy tum_lanelet2_osm_fusion project into container

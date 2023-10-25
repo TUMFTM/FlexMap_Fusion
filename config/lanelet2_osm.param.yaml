@@ -5,12 +5,12 @@
 
     # Registration GPS/Poses
     align_num_inter_ume: 500          # Number of interpolation points for Umeyama method (algorithm needs equivalent number of points)
-    rs_num_controlPoints: 1          # Number of control points for rubber-sheeting
+    rs_num_controlPoints: 3          # Number of control points for rubber-sheeting
 
     # Pointcloud transformation
     transform_pcd: false              # transform corresponding point cloud map to laneletmap if osm selected as master (align and rubber-sheet, only 2D)
     save_ascii: true                 # Safe .pcd file as: true - as ASCII file, false - as binary file
-    pcd_path: "/home/marko/Documents/Indy/maps/v8_subsample.pcd"
+    pcd_path: "/home/maximilian/Documents/data/pcd_map.pcd"
 
     # GPS zero coordinate
     customZeroPoint: false            # false - use first GPS data as zero point, true - set custom zero point with zeroLat/zeroLong
