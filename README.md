@@ -1,12 +1,17 @@
-# Lanelet2_OSM_Fusion
+# FlexMap Fusion
 [![Linux](https://img.shields.io/badge/os-linux-blue.svg)](https://www.linux.org/)
 [![Docker](https://badgen.net/badge/icon/docker?icon=docker&label)](https://www.docker.com/)
 [![ROS2humble](https://img.shields.io/badge/ros2-humble-blue.svg)](https://docs.ros.org/en/humble/index.html)
 
 ## Overview
-
 ![image](doc/img/conflation_tool.png)
-
+* ROS2 package for the developed in the context of [Autoware](https://github.com/autowarefoundation/autoware) for the improvement/extension of lanelet2 maps
+* georeferencing of the lanelet2 map based on the transformation calculated by the vehicle ego trajectory from GNSS and the SLAM-trajectory
+* fusion of semantic information from [OpenStreetMap](openstreetmap.org/) into the lanelet2 map (generated from point cloud map data)
+* modular expandability to include additional semantic information
+* possibility to apply georeferencing step on the point cloud map resulting from the SLAM process and used for the generation of the lanelet map
+* extensive visualization within RVIZ2
+* 
 <details>
 <summary> <h2> 🐋 Docker Setup </h2> </summary>
 
@@ -165,7 +170,14 @@ Technical University of Munich,
 85748 Garching,
 Germany
 
-[Florian Sauerbeck](florian.sauerbeck@tum.de),
+[Florian Sauerbeck](mailto:florian.sauerbeck@tum.de),
+Institute of Automotive Technology,
+School of Engineering and Design,
+Technical University of Munich,
+85748 Garching,
+Germany
+
+[Dominik Kulmer](mailto:dominik.kulmer@tum.de),
 Institute of Automotive Technology,
 School of Engineering and Design,
 Technical University of Munich,
