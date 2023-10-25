@@ -161,7 +161,9 @@ Detailed documentation of the functionality behind the single modules can be fou
 
 4. [Conflation](doc/conflation.md)
 
-5. [Analysis](doc/analysis.md)
+5. [Georeferencing](doc/georef.md)
+
+6. [Analysis](doc/analysis.md)
 
 </details>
 
