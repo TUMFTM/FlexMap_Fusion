@@ -20,13 +20,14 @@
 //
 #pragma once
 
-#include <lanelet2_extension/projection/mgrs_projector.hpp>
 #include <rclcpp/rclcpp.hpp>
 
 #include <curl/curl.h>
 #include <curl/easy.h>
 #include <lanelet2_io/Io.h>
 #include <lanelet2_projection/UTM.h>
+#include <pcl/io/pcd_io.h>
+
 
 #include <string>
 #include <vector>
@@ -43,8 +44,8 @@ public:
    * GPS-point as origin
    ***********************************************************/
   bool read_traj_GPS_from_file(
-    rclcpp::Node & node, const std::string & traj_path, const std::string & proj_type,
-    lanelet::GPSPoints & traj_GPS, lanelet::ConstLineString3d & traj_local);
+    rclcpp::Node & node, const std::string & traj_path, lanelet::GPSPoints & traj_GPS,
+    lanelet::ConstLineString3d & traj_local);
 
   /*********************************************************
    * Read SLAM poses from txt-file in the format:
@@ -57,8 +58,13 @@ public:
    * Read .osm file based on projector
    **********************************************/
   bool read_map_from_file(
-    rclcpp::Node & node, const std::string & map_path, const std::string & proj_type,
-    lanelet::LaneletMapPtr & map_ptr);
+    rclcpp::Node & node, const std::string & map_path, lanelet::LaneletMapPtr & map_ptr);
+
+  /*********************************************
+   * Read .pcd map corresponding to poses
+   **********************************************/
+  bool read_pcd_from_file(
+    rclcpp::Node & node, const std::string & pcd_path, pcl::PointCloud<pcl::PointXYZ>::Ptr & pcm);
 
   /*************************************************************************************
    * Download openstreetmap-excerpt for specified rectangle of GPS-coordinates via API

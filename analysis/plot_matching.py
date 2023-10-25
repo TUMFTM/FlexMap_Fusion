@@ -28,7 +28,7 @@ from utility import set_params
 
 class matching:
     def __init__(self):
-        dir_path = "/AUTOWARE_BASE_DIR/autoware/output/matching"
+        dir_path = "/home/maximilian/Documents/gitlab/autoware/output/matching"
 
         # Read files
         self.reference = load_file_man(dir_path, "reference_plines.txt", " ")

@@ -193,41 +193,34 @@ bool crubber_sheeting::transform_pcd(
   const std::string pcd_path = node.get_parameter("pcd_path").as_string();
 
   // Read input cloud based on provided file path
-  pcl::PointCloud<pcl::PointXYZ>::Ptr cloud(new pcl::PointCloud<pcl::PointXYZ>);
+  pcl::PointCloud<pcl::PointXYZ>::Ptr pcm(new pcl::PointCloud<pcl::PointXYZ>);
 
-  if (pcl::io::loadPCDFile<pcl::PointXYZ>(pcd_path, *cloud) == -1) {
+  if (pcl::io::loadPCDFile<pcl::PointXYZ>(pcd_path, *pcm) == -1) {
     PCL_ERROR("Couldn't read file Point cloud!\n");
     return -1;
   }
-  std::cout << "\033[1;36mPoint Cloud with " << cloud->width * cloud->height
+  std::cout << "\033[1;36mPoint Cloud with " << pcm->width * pcm->height
             << " points: Loaded!\033[0m" << std::endl;
-
-  // create new cloud for output
-  pcl::PointCloud<pcl::PointXYZ> cloud_out;
-  cloud_out.width = cloud->width;
-  cloud_out.height = cloud->height;
-  cloud_out.is_dense = false;
-  cloud_out.points.resize(cloud_out.width * cloud_out.height);
 
   // Transform points and write into output cloud
   int ind_pt = 0;
-  for (const auto & point : *cloud) {
+  for (const auto & point : *pcm) {
     // Align point with alignment transformation matrix
     int i = 0;
     const Eigen::Vector3d pt_(point.x, point.y, 1.0);
     const Eigen::Vector3d pt_al = trans_al.inverse() * pt_;
 
     // Create new, aligned point
-    lanelet::Point3d pt(lanelet::utils::getId(), pt_al(0), pt_al(1), 1.0);
+    lanelet::BasicPoint2d pt(pt_al(0), pt_al(1));
 
     // Find area the point is in
     for (auto & triangle : tri) {
-      if (lanelet::geometry::inside(triangle, lanelet::utils::to2D(pt).basicPoint())) {
+      if (lanelet::geometry::inside(triangle, pt)) {
         // Rubber-sheet point
         const Eigen::Vector3d pt_rs = trans[i] * pt_al;
-        cloud_out[ind_pt].x = pt_rs(0);
-        cloud_out[ind_pt].y = pt_rs(1);
-        cloud_out[ind_pt].z = point.z;
+        pcm->points[ind_pt].x = pt_rs(0);
+        pcm->points[ind_pt].y = pt_rs(1);
+        pcm->points[ind_pt].z = point.z;
         break;
       }
       ++i;
@@ -237,11 +230,51 @@ bool crubber_sheeting::transform_pcd(
 
   // write to file
   if (node.get_parameter("save_ascii").as_bool()) {
-    pcl::io::savePCDFileASCII("out_pcd.pcd", cloud_out);
+    pcl::io::savePCDFileASCII("out_pcd.pcd", *pcm);
   } else {
-    pcl::io::savePCDFileBinary("out_pcd.pcd", cloud_out);
+    pcl::io::savePCDFileBinary("out_pcd.pcd", *pcm);
   }
   std::cout << "\033[1;36mPoint Cloud transformed and written to out_pcd.pcd!\033[0m" << std::endl;
+  return true;
+}
+
+/*********************************************************************************
+ * Transform corresponding pointcloud map according to SLAM poses - GPS traj
+ **********************************************************************************/
+bool crubber_sheeting::transform_pcd(
+  rclcpp::Node & node, const lanelet::Areas & tri, const std::vector<Eigen::Matrix3d> & trans,
+  const Eigen::Matrix3d & trans_al, pcl::PointCloud<pcl::PointXYZ>::Ptr & pcm)
+{
+  // Check if the input pointer is valid
+  if (!pcm) {
+    return false;
+  }
+
+  // Transform points and write into output cloud
+  int ind_pt = 0;
+  for (const auto & point : *pcm) {
+    // Align point with alignment transformation matrix
+    int i = 0;
+    const Eigen::Vector3d pt_(point.x, point.y, 1.0);
+    const Eigen::Vector3d pt_al = trans_al.inverse() * pt_;
+
+    // Create new, aligned point
+    lanelet::BasicPoint2d pt(pt_al(0), pt_al(1));
+
+    // Find area the point is in
+    for (auto & triangle : tri) {
+      if (lanelet::geometry::inside(triangle, pt)) {
+        // Rubber-sheet point
+        const Eigen::Vector3d pt_rs = trans[i] * pt_al;
+        pcm->points[ind_pt].x = pt_rs(0);
+        pcm->points[ind_pt].y = pt_rs(1);
+        pcm->points[ind_pt].z = point.z;
+        break;
+      }
+      ++i;
+    }
+    ++ind_pt;
+  }
   return true;
 }
 

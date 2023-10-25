@@ -23,7 +23,6 @@
 #include "utility.hpp"
 
 #include <Eigen/Dense>
-#include <lanelet2_extension/projection/mgrs_projector.hpp>
 #include <rclcpp/rclcpp.hpp>
 
 #include <lanelet2_core/geometry/LineString.h>

@@ -20,8 +20,9 @@
 //
 #pragma once
 //
-#include <lanelet2_extension/utility/query.hpp>
 #include <rclcpp/rclcpp.hpp>
+
+#include <lanelet2_core/LaneletMap.h>
 
 #include <string>
 #include <vector>
@@ -36,8 +37,7 @@ public:
    ***********************************************************************/
   bool ll_map_extract(
     const lanelet::LaneletMapPtr & map_ptr, lanelet::ConstLanelets & all,
-    lanelet::ConstLanelets & regular, lanelet::ConstLanelets & shoulder,
-    std::vector<lanelet::ConstLineString3d> & stop_lines);
+    lanelet::ConstLanelets & regular, lanelet::ConstLanelets & shoulder);
 
   /**************************************************************
    * Extract street network from openstreetmap-map

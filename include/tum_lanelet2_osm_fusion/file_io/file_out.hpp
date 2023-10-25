@@ -20,11 +20,11 @@
 //
 #pragma once
 
-#include <lanelet2_extension/projection/mgrs_projector.hpp>
 #include <rclcpp/rclcpp.hpp>
 
 #include <lanelet2_io/Io.h>
 #include <lanelet2_projection/UTM.h>
+#include <pcl/io/pcd_io.h>
 
 #include <string>
 #include <vector>
@@ -39,8 +39,13 @@ public:
    * from GPS-trajectory
    *******************************************************************/
   bool write_map_to_path(
-    rclcpp::Node & node, const std::string & out_path, const std::string & proj_type,
-    const lanelet::LaneletMapPtr & map_ptr);
+    rclcpp::Node & node, const std::string & out_path, const lanelet::LaneletMapPtr & map_ptr);
 
+  /******************************************************************
+   * Write transformed pcd map to new file
+   *******************************************************************/
+  bool write_pcd_to_path(
+    rclcpp::Node & node, const std::string & pcd_out_path,
+    const pcl::PointCloud<pcl::PointXYZ>::Ptr & pcd_map);
 private:
 };

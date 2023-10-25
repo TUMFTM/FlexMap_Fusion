@@ -46,8 +46,8 @@ cfile_in::cfile_in()
  * GPS-point as origin
  ***********************************************************/
 bool cfile_in::read_traj_GPS_from_file(
-  rclcpp::Node & node, const std::string & traj_path, const std::string & proj_type,
-  lanelet::GPSPoints & traj_GPS, lanelet::ConstLineString3d & traj_local)
+  rclcpp::Node & node, const std::string & traj_path, lanelet::GPSPoints & traj_GPS,
+  lanelet::ConstLineString3d & traj_local)
 {
   const std::string node_name = node.get_parameter("node_name").as_string();
   lanelet::GPSPoint gps_pt;
@@ -106,23 +106,11 @@ bool cfile_in::read_traj_GPS_from_file(
   lanelet::GPSPoint position{orig_lat, orig_lon};
   lanelet::Origin orig{position};
 
-  if (proj_type == "MGRS") {
-    lanelet::projection::MGRSProjector projector;
-    for (int i = 0; i < num_points; i++) {
-      pt_basic = projector.forward(traj_GPS[i]);
-      lanelet::Point3d pt(lanelet::utils::getId(), pt_basic.x(), pt_basic.y(), pt_basic.z());
-      ls.push_back(pt);
-    }
-  } else if (proj_type == "UTM") {
-    lanelet::projection::UtmProjector projector{orig};
-    for (int i = 0; i < num_points; i++) {
-      pt_basic = projector.forward(traj_GPS[i]);
-      lanelet::Point3d pt(lanelet::utils::getId(), pt_basic.x(), pt_basic.y(), pt_basic.z());
-      ls.push_back(pt);
-    }
-  } else {
-    RCLCPP_ERROR(rclcpp::get_logger(node_name), "Selected proj_type not supported!");
-    return false;
+  lanelet::projection::UtmProjector projector{orig};
+  for (int i = 0; i < num_points; i++) {
+    pt_basic = projector.forward(traj_GPS[i]);
+    lanelet::Point3d pt(lanelet::utils::getId(), pt_basic.x(), pt_basic.y(), pt_basic.z());
+    ls.push_back(pt);
   }
   traj_local = ls;
   return true;
@@ -162,8 +150,7 @@ bool cfile_in::read_poses_SLAM_from_file(
  * Read .osm file based on projector
  **********************************************/
 bool cfile_in::read_map_from_file(
-  rclcpp::Node & node, const std::string & map_path, const std::string & proj_type,
-  lanelet::LaneletMapPtr & map_ptr)
+  rclcpp::Node & node, const std::string & map_path, lanelet::LaneletMapPtr & map_ptr)
 {
   const std::string node_name = node.get_parameter("node_name").as_string();
   // Declare error messages during loading
@@ -184,17 +171,17 @@ bool cfile_in::read_map_from_file(
   }
 
   // Set projector and load file
+  lanelet::projection::UtmProjector projector{orig};
+  map_ptr = lanelet::load(map_path, projector, &errors);
 
-  if (proj_type == "MGRS") {
-    lanelet::projection::MGRSProjector projector;
-    map_ptr = lanelet::load(map_path, projector, &errors);
-  } else if (proj_type == "UTM") {
-    lanelet::projection::UtmProjector projector{orig};
-    map_ptr = lanelet::load(map_path, projector, &errors);
-  } else {
-    RCLCPP_ERROR(rclcpp::get_logger(node_name), "Selected proj_type not supported!");
-    return false;
+  // Overwrite projected point coordinates with local x-/y-values due to VMB settings
+  for (auto & pt : map_ptr->pointLayer) {
+    if (pt.hasAttribute("local_x") && pt.hasAttribute("local_y")) {
+      pt.x() = *pt.attributes()["local_x"].asDouble();
+      pt.y() = *pt.attributes()["local_y"].asDouble();
+    }
   }
+
   // Return map and output potential errors
   if (errors.empty()) {
     return true;
@@ -209,6 +196,31 @@ bool cfile_in::read_map_from_file(
               << "(written to errors_map_loading.txt)\033[0m" << std::endl;
     return true;
   }
+}
+
+/*********************************************
+ * Read .pcd map corresponding to poses
+ **********************************************/
+bool cfile_in::read_pcd_from_file(
+  rclcpp::Node & node, const std::string & pcd_path, pcl::PointCloud<pcl::PointXYZ>::Ptr & pcm)
+{
+  const std::string node_name = node.get_parameter("node_name").as_string();
+  // Check for valid filename
+  if (pcd_path.substr(pcd_path.length() - 4) != ".pcd") {
+    RCLCPP_ERROR(
+      rclcpp::get_logger(node_name), "The provided pcd_path does not lead to a .pcd file!");
+    return false;
+  }
+
+  // Read input cloud based on provided file path
+  pcl::PointCloud<pcl::PointXYZ>::Ptr cloud(new pcl::PointCloud<pcl::PointXYZ>);
+
+  if (pcl::io::loadPCDFile<pcl::PointXYZ>(pcd_path, *cloud) == -1) {
+    PCL_ERROR("Couldn't read file Point cloud!\n");
+    return -1;
+  }
+  pcm = cloud;
+  return true;
 }
 
 /*************************************************************************************

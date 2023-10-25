@@ -35,16 +35,14 @@ def generate_launch_description():
 
     # Define command line args
     traj_path = DeclareLaunchArgument(
-        "traj_path", default_value=TextSubstitution(text="test/route_1_GPS.txt")
+        "traj_path", default_value=TextSubstitution(text="test/Route_1_GPS.txt")
     )
     poses_path = DeclareLaunchArgument(
         "poses_path", default_value=TextSubstitution(text="test/route1_pose_kitti.txt")
     )
-    map_path = DeclareLaunchArgument(
-        "map_path", default_value=TextSubstitution(text="test/lanelet2_route_1.osm")
-    )
-    out_path = DeclareLaunchArgument(
-        "out_path", default_value=TextSubstitution(text="lanelet2_map.osm")
+    pcd_path = DeclareLaunchArgument("pcd_path")
+    pcd_out_path = DeclareLaunchArgument(
+        "pcd_out_path", default_value=TextSubstitution(text="pcd_map_georef.pcd")
     )
 
     # Start nodes
@@ -53,26 +51,26 @@ def generate_launch_description():
         namespace="",
         executable="rviz2",
         name="rviz2",
-        arguments=["-d" + os.path.join(config, "rviz_conf_lanelet2_osm.rviz")],
+        arguments=["-d" + os.path.join(config, "rviz_conf_kiss_icp_georef.rviz")],
     )
 
-    lanelet2_osm_node = Node(
+    kiss_icp_georef_node = Node(
         package="tum_lanelet2_osm_fusion",
         namespace="",
-        executable="lanelet2_osm",
-        name="lanelet2_osm",
+        executable="kiss_icp_georef",
+        name="kiss_icp_georef",
         output="screen",
         parameters=[
             {
                 "traj_path": LaunchConfiguration("traj_path"),
                 "poses_path": LaunchConfiguration("poses_path"),
-                "map_path": LaunchConfiguration("map_path"),
-                "out_path": LaunchConfiguration("out_path"),
+                "pcd_path": LaunchConfiguration("pcd_path"),
+                "pcd_out_path": LaunchConfiguration("pcd_out_path"),
             },
-            os.path.join(config, "lanelet2_osm.param.yaml"),
+            os.path.join(config, "kiss_icp_georef.param.yaml"),
         ],
     )
 
     return LaunchDescription(
-        [traj_path, poses_path, map_path, out_path, lanelet2_osm_node, rviz2_node]
+        [traj_path, poses_path, pcd_path, pcd_out_path, kiss_icp_georef_node, rviz2_node]
     )

@@ -28,7 +28,7 @@ from utility import set_params
 
 class traj_diff:
     def __init__(self):
-        dir_path = "/AUTOWARE_BASE_DIR/autoware/output/traj_matching"
+        dir_path = "/home/maximilian/Documents/gitlab/autoware/output/traj_matching"
 
         # Read files
         self.source = load_file(dir_path, "source.txt", " ")

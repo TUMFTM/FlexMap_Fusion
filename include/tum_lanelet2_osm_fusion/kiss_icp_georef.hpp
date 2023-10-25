@@ -22,13 +22,10 @@
 //
 #include "align.hpp"
 #include "analysis.hpp"
-#include "conflation.hpp"
-#include "extract_network.hpp"
 #include "file_in.hpp"
 #include "file_out.hpp"
-#include "matching.hpp"
 #include "messages.hpp"
-#include "param_lanelet2_osm.hpp"
+#include "param_kiss_icp_georef.hpp"
 #include "rubber_sheeting.hpp"
 
 #include <rclcpp/rclcpp.hpp>
@@ -38,15 +35,15 @@
 #include <utility>
 #include <vector>
 
-class clanelet2_osm : public rclcpp::Node
+class ckiss_icp_georef : public rclcpp::Node
 {
 public:
   /***************************************************************
    * Main constructor to be called after the node was triggered
    * => calls all member functions
    ****************************************************************/
-  explicit clanelet2_osm(const std::string & name);
-  ~clanelet2_osm();
+  explicit ckiss_icp_georef(const std::string & name);
+  ~ckiss_icp_georef();
 
   /**************************************************************
    * initialize publishers for visualization in RVIZ
@@ -62,11 +59,6 @@ public:
    * => paths to files specified in command-line or launch-file
    *********************************************************************/
   void load_data();
-
-  /**********************************************************************
-   * Extract road networks from openstreetmap-data
-   ***********************************************************************/
-  void get_network();
 
   /***********************************************************
    * Align GPS and SLAM trajectory (target to reference)
@@ -92,18 +84,8 @@ public:
    ************************************************/
   void publish_rs();
 
-  /*********************************************************************
-   * Perform conflation from openstreetmap to lanelet-map
-   **********************************************************************/
-  void conflation();
-
-  /************************************************************************************
-   * Publish conflation geometry, lanelet-map and openstreetmap-road network
-   *************************************************************************************/
-  void publish_map();
-
   /***********************************************************
-   * Write conflated lanelet-map to file
+   * Write pcd-map to file
    ************************************************************/
   void write_map();
 
@@ -118,19 +100,15 @@ private:
   // User parameters
   std::string traj_path;
   std::string poses_path;
-  std::string map_path;
-  std::string osm_path;
-  std::string out_path;
+  std::string pcd_path;
+  std::string pcd_out_path;
 
   // Module classes
   cfile_in m_file_loader;
-  cfile_out m_file_writer;
-  cextract_network m_extract;
   calign m_align;
   crubber_sheeting m_rubber_sheeting;
-  cmatching m_matching;
-  cconflation m_conflation;
   cmessages m_msgs;
+  cfile_out m_file_writer;
   canalysis m_analysis;
 
   // Objects
@@ -140,6 +118,8 @@ private:
   lanelet::ConstLineString3d traj_target;
   lanelet::ConstLineString3d traj_align;
   lanelet::ConstLineString3d traj_rs;
+  // PCD map
+  pcl::PointCloud<pcl::PointXYZ>::Ptr pcd_map;
 
   // Transformation
   Eigen::Matrix3d trans_al;
@@ -147,45 +127,13 @@ private:
   lanelet::Areas triangles;
   std::vector<Eigen::Matrix3d> trans_rs;
 
-  // Conflation
-  std::vector<s_match> matches;
-
-  // Master and target map
-  lanelet::LaneletMapPtr master_map_lanelet_ptr;
-  lanelet::LaneletMapPtr target_map_lanelet_ptr;
-
-  // Reference map
-  lanelet::LaneletMapPtr ll_map_lanelet_ptr;
-  lanelet::ConstLanelets ll_lanelets;
-  lanelet::ConstLanelets ll_regular_lanelets;
-  std::vector<std::pair<lanelet::Id, std::string>> ll_regular_cols;
-  lanelet::ConstLanelets ll_shoulder_lanelets;
-  lanelet::ConstLanelets to_be_deleted;
-  lanelet::ConstLineStrings3d ll_collapsed;
-
-  // Update reference map
-  lanelet::LaneletMapPtr ll_map_new;
-  lanelet::ConstLanelets ll_lanelets_new;
-  lanelet::ConstLanelets ll_regular_lanelets_new;
-  lanelet::ConstLanelets ll_shoulder_lanelets_new;
-
-  // OSM map
-  lanelet::LaneletMapPtr osm_map_lanelet_ptr;
-  lanelet::LineStrings3d osm_all_linestrings;
-  lanelet::ConstLineStrings3d osm_motorway_linestrings;
-  lanelet::ConstLineStrings3d osm_highway_linestrings;
-  lanelet::ConstLineStrings3d osm_road_linestrings;
-
   // Messages
   visualization_msgs::msg::MarkerArray msg_traj_master_markers;
   visualization_msgs::msg::MarkerArray msg_traj_target_markers;
   visualization_msgs::msg::MarkerArray msg_traj_align_markers;
   visualization_msgs::msg::MarkerArray msg_traj_rs_markers;
   visualization_msgs::msg::MarkerArray msg_rs_geom_markers;
-  visualization_msgs::msg::MarkerArray msg_confl_geom_markers;
-  visualization_msgs::msg::MarkerArray msg_ll_map_markers;
-  visualization_msgs::msg::MarkerArray msg_ll_map_new_markers;
-  visualization_msgs::msg::MarkerArray msg_osm_map_markers;
+  sensor_msgs::msg::PointCloud2 msg_pcd_map;
 
   // Publisher
   rclcpp::Publisher<visualization_msgs::msg::MarkerArray>::SharedPtr pub_traj_master_markers;
@@ -193,8 +141,5 @@ private:
   rclcpp::Publisher<visualization_msgs::msg::MarkerArray>::SharedPtr pub_traj_align_markers;
   rclcpp::Publisher<visualization_msgs::msg::MarkerArray>::SharedPtr pub_traj_rs_markers;
   rclcpp::Publisher<visualization_msgs::msg::MarkerArray>::SharedPtr pub_rs_geom_markers;
-  rclcpp::Publisher<visualization_msgs::msg::MarkerArray>::SharedPtr pub_confl_geom_markers;
-  rclcpp::Publisher<visualization_msgs::msg::MarkerArray>::SharedPtr pub_ll_map_markers;
-  rclcpp::Publisher<visualization_msgs::msg::MarkerArray>::SharedPtr pub_ll_map_new_markers;
-  rclcpp::Publisher<visualization_msgs::msg::MarkerArray>::SharedPtr pub_osm_map_markers;
+  rclcpp::Publisher<sensor_msgs::msg::PointCloud2>::SharedPtr pub_pcd_map;
 };

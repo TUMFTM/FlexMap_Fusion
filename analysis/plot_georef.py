@@ -36,9 +36,9 @@ def wgs84_to_utm32(latitude, longitude):
 class georef:
     def __init__(self):
         # Set paths
-        dir_path_matching = "/AUTOWARE_BASE_DIR/autoware/output/matching"
-        dir_path_traj = "/DIR_SAVED_TRAJ_PATH/"
-        path_orthophoto = "/PATH_TO_ORTHOPHOTO/32696_5348.tif"
+        dir_path_matching = "/home/maximilian/Documents/gitlab/autoware/output/matching"
+        dir_path_traj = "/home/maximilian/Documents/data/EDGAR/Route_2"
+        path_orthophoto = "/home/maximilian/Documents/data/EDGAR/Route_2/32696_5348.tif"
 
         # Read files
         self.source = load_file(dir_path_traj, "Route_2_GPS.txt", " ")

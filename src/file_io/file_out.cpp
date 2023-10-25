@@ -38,8 +38,7 @@ cfile_out::cfile_out()
  * from GPS-trajectory
  *******************************************************************/
 bool cfile_out::write_map_to_path(
-  rclcpp::Node & node, const std::string & out_path, const std::string & proj_type,
-  const lanelet::LaneletMapPtr & map_ptr)
+  rclcpp::Node & node, const std::string & out_path, const lanelet::LaneletMapPtr & map_ptr)
 {
   const std::string node_name = node.get_parameter("node_name").as_string();
   lanelet::ErrorMessages errors{};
@@ -62,19 +61,8 @@ bool cfile_out::write_map_to_path(
   }
 
   // Define projector and write map
-  if (proj_type == "MGRS") {
-    lanelet::projection::MGRSProjector projector;
-    projector.setMGRSCode({position});
-
-    lanelet::write(out_path, *map_ptr, projector, &errors);
-  } else if (proj_type == "UTM") {
-    lanelet::projection::UtmProjector projector{orig};
-
-    lanelet::write(out_path, *map_ptr, projector, &errors);
-  } else {
-    RCLCPP_ERROR(rclcpp::get_logger(node_name), "Selected proj_type not supported!");
-    return false;
-  }
+  lanelet::projection::UtmProjector projector{orig};
+  lanelet::write(out_path, *map_ptr, projector, &errors);
 
   // Output errors if existing
   if (!errors.empty()) {
@@ -83,6 +71,22 @@ bool cfile_out::write_map_to_path(
       RCLCPP_ERROR_STREAM(rclcpp::get_logger(node_name), error_ele);
     }
     return false;
+  }
+  return true;
+}
+
+/******************************************************************
+ * Write transformed pcd map to new file
+ *******************************************************************/
+bool cfile_out::write_pcd_to_path(
+  rclcpp::Node & node, const std::string & pcd_out_path,
+  const pcl::PointCloud<pcl::PointXYZ>::Ptr & pcd_map)
+{
+  // write to file
+  if (node.get_parameter("save_ascii").as_bool()) {
+    pcl::io::savePCDFileASCII(pcd_out_path, *pcd_map);
+  } else {
+    pcl::io::savePCDFileBinary(pcd_out_path, *pcd_map);
   }
   return true;
 }

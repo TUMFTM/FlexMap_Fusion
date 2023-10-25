@@ -1,0 +1,21 @@
+/**:
+  ros__parameters:
+    # Master file
+    master: GPS                       # set map that is taken as reference, options: GPS, SLAM
+
+    # Registration GPS/Poses
+    align_num_inter_ume: 500          # Number of interpolation points for Umeyama method (algorithm needs equivalent number of points)
+    rs_num_controlPoints: 3          # Number of control points for rubber-sheeting
+
+    # Pointcloud transformation
+    transform_pcd: true              # transform corresponding point cloud map to laneletmap if osm selected as master (align and rubber-sheet, only 2D)
+    save_ascii: true                 # Safe .pcd file as: true - as ASCII file, false - as binary file
+
+    # GPS zero coordinate
+    customZeroPoint: false            # false - use first GPS data as zero point, true - set custom zero point with zeroLat/zeroLong
+    zeroLat: 45.61989206965495        # Zero point latitude
+    zeroLong: 9.283415137392435       # Zero point longitude
+
+    # Analysis Output
+    analysis_output_dir: output       # directory to save output data
+    analysis_traj_matching: true      # Visualize Rubber-Sheeting (true => data is saved in directory to be plotted with python script in ~/analysis)

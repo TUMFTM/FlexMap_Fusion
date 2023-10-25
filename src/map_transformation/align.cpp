@@ -43,14 +43,10 @@ calign::calign()
  *********************************************************************/
 bool calign::get_transformation(
   rclcpp::Node & node, const lanelet::ConstLineString3d & src,
-  const lanelet::ConstLineString3d & target, Eigen::Matrix3d & trans, const std::string & type)
+  const lanelet::ConstLineString3d & target, Eigen::Matrix3d & trans)
 {
   const std::string node_name = node.get_parameter("node_name").as_string();
-  if (type == "ICP") {
-    point_transformation_icp(src, target, trans);
-  } else if (type == "Umeyama") {
-    point_transformation_umeyama(src, target, trans, node);
-  } else {
+  if (!point_transformation_umeyama(src, target, trans, node)) {
     RCLCPP_ERROR(rclcpp::get_logger(node_name), "!! Registration method not supported !!");
     return false;
   }
@@ -120,48 +116,6 @@ bool calign::point_transformation_umeyama(
   return true;
 }
 
-/***********************************************************************
- * Calculate transformation matrix according to ICP algorithm
- * => from PCL (prior conversion of linestrings to point clouds)
- ************************************************************************/
-bool calign::point_transformation_icp(
-  const lanelet::ConstLineString3d & src, const lanelet::ConstLineString3d & target,
-  Eigen::Matrix3d & trans)
-{
-  int s_sz = src.size();
-  int t_sz = target.size();
-
-  // Create point clouds for application of pcl library and set points
-  // only 2d information of points used, since no 3d information from trajectory
-  pcl::PointCloud<pcl::PointXYZ>::Ptr src_cloud(new pcl::PointCloud<pcl::PointXYZ>(s_sz, 1));
-  pcl::PointCloud<pcl::PointXYZ>::Ptr target_cloud(new pcl::PointCloud<pcl::PointXYZ>(t_sz, 1));
-  pcl::PointCloud<pcl::PointXYZ> res;
-
-  ls2PC2d(src, src_cloud);
-  ls2PC2d(target, target_cloud);
-
-  // Apply ICP-algorithm from pcl
-  pcl::IterativeClosestPoint<pcl::PointXYZ, pcl::PointXYZ> icp;
-  icp.setInputSource(src_cloud);
-  icp.setInputTarget(target_cloud);
-  // Set convergence criteria
-  // icp.setMaximumIterations(30);
-  // icp.setTransformationEpsilon (1e-8);
-  // icp.setEuclideanFitnessEpsilon (1);
-  icp.align(res);
-
-  if (!icp.hasConverged()) {
-    PCL_ERROR("!! ICP has not converged - Continuing... !!");
-  }
-
-  // Convert to 3d matrix (ICP only working for 3d => 4x4 matrix)
-  const Eigen::Matrix4d trans_icp = icp.getFinalTransformation().cast<double>();
-  trans.block(0, 0, 2, 2) = trans_icp.block(0, 0, 2, 2);
-  trans.block(0, 2, 2, 1) = trans_icp.block(0, 3, 2, 1);
-  trans.block(2, 0, 1, 3) << 0, 0, 1;
-  return true;
-}
-
 /*************************************************************************************
  * Transforming the coordinates of a point according to transformation matrix (2D)
  **************************************************************************************/
@@ -196,23 +150,6 @@ Eigen::MatrixXd calign::ls2interp_mat2d(const lanelet::ConstLineString3d & ls, c
     mat.col(i) << pt.x(), pt.y();
   }
   return mat;
-}
-
-/*********************************************************
- * Convert linestring to pointcloud from pcl
- **********************************************************/
-bool calign::ls2PC2d(
-  const lanelet::ConstLineString3d & ls, pcl::PointCloud<pcl::PointXYZ>::Ptr & pc)
-{
-  const int sz = ls.size();
-
-  // Set values
-  for (int i = 0; i < sz; i++) {
-    pc->points[i].x = ls[i].x();
-    pc->points[i].y = ls[i].y();
-    pc->points[i].z = 0.0;
-  }
-  return true;
 }
 
 /************************************************************************************
