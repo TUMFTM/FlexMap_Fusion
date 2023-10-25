@@ -4,14 +4,19 @@
 [![ROS2humble](https://img.shields.io/badge/ros2-humble-blue.svg)](https://docs.ros.org/en/humble/index.html)
 
 ## Overview
-![image](doc/img/conflation_tool.png)
+![image](doc/img/pipeline_offline_mapping.png)
+*Offline Mapping Pipeline developed at the Institute of Automotive Technology*
 * ROS2 package for the developed in the context of [Autoware](https://github.com/autowarefoundation/autoware) for the improvement/extension of lanelet2 maps
-* georeferencing of the lanelet2 map based on the transformation calculated by the vehicle ego trajectory from GNSS and the SLAM-trajectory
-* fusion of semantic information from [OpenStreetMap](openstreetmap.org/) into the lanelet2 map (generated from point cloud map data)
-* modular expandability to include additional semantic information
-* possibility to apply georeferencing step on the point cloud map resulting from the SLAM process and used for the generation of the lanelet map
-* extensive visualization within RVIZ2
-* 
+* The package is designed for the application in an offline mapping pipeline developed at the Institute of Automotive Technology of the Technical University of Munich
+* The package consists of the three modules "Map Alignment", "Map Conflation" and "Georeferencing", that are explained in more detail in the image below and the documentation of the single modules
+![image](doc/img/conflation_tool.png)
+*Overview of the single modules of the FlexMap Fusion tool*
+* The following functionalities are included
+   * georeferencing of the lanelet2 map based on the transformation calculated by the vehicle ego trajectory from GNSS and the SLAM-trajectory
+   * fusion of semantic information from [OpenStreetMap](openstreetmap.org/) into the lanelet2 map (generated from point cloud map data)
+   * modular expandability to include additional semantic information
+   * possibility to apply georeferencing step on the point cloud map resulting from the SLAM process and used for the generation of the lanelet map
+   * extensive visualization within RVIZ2
 <details>
 <summary> <h2> 🐋 Docker Setup </h2> </summary>
 
