@@ -30,7 +30,7 @@ As the package is designed for use in combination with [Autoware](https://github
    ```bash
    git clone https://github.com/TUMFTM/Lanelet2_OSM_Fusion.git
    ```
-2. Go to the rood directory of the repository
+2. Go to the root directory of the repository
    ```bash
    cd Lanelet2_OSM_Fusion/
    ```
@@ -71,8 +71,11 @@ As the package is designed for use in combination with [Autoware](https://github
    ```bash
        ros2 launch tum_lanelet2_osm_fusion lanelet2_osm.launch.py traj_path:=<path-to-GPS-trajectory> poses_path:=<path-to-SLAM-trajectory>  map_path:=<path-to-lanelet-map> out_path:=<path-to-save-output-map>
    ```
-
    - the launch file directly links to the corresponding parameter file in `/config/`.
+   - To directly run the package with the provided test files from the Docker root directory, use the following command:
+   ```bash
+        ros2 launch tum_lanelet2_osm_fusion lanelet2_osm.launch.py traj_path:=./src/tum_lanelet2_osm_fusion/test/route_1_GPS.txt poses_path:=./src/tum_lanelet2_osm_fusion/test/route1_pose_kitti.txt  map_path:=./src/tum_lanelet2_osm_fusion/test/lanelet2_route_1.osm out_path:=./test_output/
+   ```
 
 3. Select control points
    - after the trajectories are loaded and the target trajectory is aligned to the master trajectory by the Umeyama algorithm, you are asked in the command window to select control points for the rubber-sheet transformation (the amount of points can be configured in the config file).

@@ -10,7 +10,7 @@
     # Pointcloud transformation
     transform_pcd: false              # transform corresponding point cloud map to laneletmap if osm selected as master (align and rubber-sheet, only 2D)
     save_ascii: true                 # Safe .pcd file as: true - as ASCII file, false - as binary file
-    pcd_path: "/home/maximilian/Documents/data/pcd_map.pcd"
+    pcd_path: "PATH/TO/PCD_MAP"
 
     # GPS zero coordinate
     customZeroPoint: false            # false - use first GPS data as zero point, true - set custom zero point with zeroLat/zeroLong
