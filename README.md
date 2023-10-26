@@ -64,6 +64,10 @@ As the package is designed for use in combination with [Autoware](https://github
    - `poses_path` => path to SLAM trajectory of the vehicle (KITTI-format, trajectories don't have to be synchronized over time)
    - `map_path` => path to lanelet2 map corresponding to trajectories (map can have missing elements/attributes, only when using node `lanelet2_osm`)
    - `out_path` => path to save the modified lanelet map (DEFAULT: /lanelet2_map.osm, only when using node `lanelet2_osm`)
+   - if you want to georeference the point cloud map corresponding to the lanelet2 map with the same set of control points:
+      - set the parameter `transform_pcd` in the config file to `true`
+      - adjust the path to the point cloud map (parameter `pcd_path`)
+      - the georeferenced point cloud map will be saved in the current working directory (if you'd like to specify a different path, see `kiss_icp_georef`
 2. Start the package
    - it is recommended to directly use the provided ROS launch file as it starts the package itself and the visualization in RVIZ:
    - replace the filepaths and run the following command inside the docker container:
