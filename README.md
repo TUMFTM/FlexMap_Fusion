@@ -6,7 +6,7 @@
 ## Overview
 ![image](doc/img/pipeline_offline_mapping.png)
 *Offline Mapping Pipeline developed at the Institute of Automotive Technology*
-* ROS2 package for the developed in the context of [Autoware](https://github.com/autowarefoundation/autoware) for the improvement/extension of lanelet2 maps
+* ROS2 package for the improvement/extension of lanelet2 maps with data from [OpenStreetMap](openstreetmap.org/) and their georeferencing with GNSS data
 * The package is designed for the application in an offline mapping pipeline developed at the Institute of Automotive Technology of the Technical University of Munich
 * The package consists of the three modules "Map Alignment", "Map Conflation" and "Georeferencing", that are explained in more detail in the image below and the documentation of the single modules
 ![image](doc/img/conflation_tool.png)
@@ -28,7 +28,7 @@ As the package is designed for use in combination with [Autoware](https://github
 
 1. Clone the repository by running
    ```bash
-   git clone https://github.com/TUMFTM/Lanelet2_OSM_Fusion.git
+   git clone git@github.com:TUMFTM/FlexMap_Fusion.git
    ```
 2. Go to the root directory of the repository
    ```bash
