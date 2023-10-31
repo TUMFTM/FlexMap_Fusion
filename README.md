@@ -32,7 +32,7 @@ As the package is designed for use in combination with [Autoware](https://github
    ```
 2. Go to the root directory of the repository
    ```bash
-   cd Lanelet2_OSM_Fusion/
+   cd FlexMap_Fusion/
    ```
 3. Build the docker image
    ```bash
