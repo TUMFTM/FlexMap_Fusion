@@ -38,7 +38,7 @@ As the package is designed for use in combination with [Autoware](https://github
    ```bash
    ./build_docker.sh
    ```
-4. Run the container and mount your data by adjusting the corresponding line within ```run_docker.sh```
+4. Run the container and mount your data by adjusting the corresponding line (line 7) within ```run_docker.sh```
    ```bash
    ./run_docker.sh
    ```
@@ -73,12 +73,12 @@ As the package is designed for use in combination with [Autoware](https://github
    - replace the filepaths and run the following command inside the docker container:
 
    ```bash
-       ros2 launch tum_lanelet2_osm_fusion lanelet2_osm.launch.py traj_path:=<path-to-GPS-trajectory> poses_path:=<path-to-SLAM-trajectory>  map_path:=<path-to-lanelet-map> out_path:=<path-to-save-output-map>
+       ros2 launch flexmap_fusion lanelet2_osm.launch.py traj_path:=<path-to-GPS-trajectory> poses_path:=<path-to-SLAM-trajectory>  map_path:=<path-to-lanelet-map> out_path:=<path-to-save-output-map>
    ```
    - the launch file directly links to the corresponding parameter file in `/config/`.
    - To directly run the package with the provided test files from the Docker root directory, use the following command:
    ```bash
-        ros2 launch tum_lanelet2_osm_fusion lanelet2_osm.launch.py traj_path:=./src/tum_lanelet2_osm_fusion/test/route_1_GPS.txt poses_path:=./src/tum_lanelet2_osm_fusion/test/route1_pose_kitti.txt  map_path:=./src/tum_lanelet2_osm_fusion/test/lanelet2_route_1.osm out_path:=./test_output/
+        ros2 launch flexmap_fusion lanelet2_osm.launch.py traj_path:=./src/flexmap_fusion/test/route_1_GPS.txt poses_path:=./src/flexmap_fusion/test/route1_pose_kitti.txt  map_path:=./src/flexmap_fusion/test/lanelet2_route_1.osm out_path:=lanelet2_map_georef.osm
    ```
 
 3. Select control points
@@ -121,7 +121,7 @@ As the package is designed for use in combination with [Autoware](https://github
    - it is recommended to directly use the provided ROS launch file that starts the package itself and the visualization in RVIZ:
 
    ```bash
-       ros2 launch tum_lanelet2_osm_fusion kiss_icp_georef.launch.py traj_path:=<path-to-GPS-trajectory> poses_path:=<path-to-SLAM-trajectory>  pcd_path:=<path-to-pcd-map> pcd_out_path:=<path-to-save-pcd-map>
+       ros2 launch flexmap_fusion kiss_icp_georef.launch.py traj_path:=<path-to-GPS-trajectory> poses_path:=<path-to-SLAM-trajectory>  pcd_path:=<path-to-pcd-map> pcd_out_path:=<path-to-save-pcd-map>
    ```
 
    - the launch file directly links to the corresponding parameter file in `/config/`.

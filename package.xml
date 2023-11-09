@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <?xml-model href="http://download.ros.org/schema/package_format3.xsd" schematypens="http://www.w3.org/2001/XMLSchema"?>
 <package format="3">
-  <name>tum_lanelet2_osm_fusion</name>
+  <name>flexmap_fusion</name>
   <version>0.0.0</version>
   <description>Package to improve erroneous lanelet2 map from vehicle-centric algorithms with OpenStreetMap data</description>
   <maintainer email="maxi.leitenstern@tum.de">Maximilian Leitenstern</maintainer>

@@ -4,7 +4,6 @@ docker run -it --rm \
     -e DISPLAY=$DISPLAY \
     -v /tmp/.X11-unix:/tmp/.X11-unix \
     --privileged \
-    # Mount your local directory to the container
-    -v /your/local/directory:/workspace/data \
+    -v /your/local/directory/data:/workspace/data \
     flexmap_fusion:v1
 xhost -
