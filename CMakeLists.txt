@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.8)
-project(tum_lanelet2_osm_fusion)
+project(flexmap_fusion)
 
 # Default to C++17
 if(NOT CMAKE_CXX_STANDARD)
@@ -43,8 +43,8 @@ add_library(file_in SHARED
 
 target_include_directories(file_in
   PUBLIC
-    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include/tum_lanelet2_osm_fusion>
-    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include/tum_lanelet2_osm_fusion/file_io>
+    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include/flexmap_fusion>
+    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include/flexmap_fusion/file_io>
     $<INSTALL_INTERFACE:include>)
 
 ament_target_dependencies(file_in rclcpp CURL lanelet2_core lanelet2_io lanelet2_projection)
@@ -60,8 +60,8 @@ add_library(file_out SHARED
 
 target_include_directories(file_out
   PUBLIC
-  $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include/tum_lanelet2_osm_fusion>
-    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include/tum_lanelet2_osm_fusion/file_io>
+  $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include/flexmap_fusion>
+    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include/flexmap_fusion/file_io>
     $<INSTALL_INTERFACE:include>)
 
 ament_target_dependencies(file_out rclcpp lanelet2_core lanelet2_io lanelet2_projection)
@@ -77,8 +77,8 @@ add_library(extract_network SHARED
 
 target_include_directories(extract_network
   PUBLIC
-    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include/tum_lanelet2_osm_fusion>
-    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include/tum_lanelet2_osm_fusion/extract_network>
+    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include/flexmap_fusion>
+    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include/flexmap_fusion/extract_network>
     $<INSTALL_INTERFACE:include>)
 
 ament_target_dependencies(extract_network rclcpp lanelet2_core lanelet2_io lanelet2_projection)
@@ -94,8 +94,8 @@ add_library(align SHARED
 
 target_include_directories(align
   PUBLIC
-    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include/tum_lanelet2_osm_fusion>
-    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include/tum_lanelet2_osm_fusion/map_transformation>
+    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include/flexmap_fusion>
+    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include/flexmap_fusion/map_transformation>
     $<INSTALL_INTERFACE:include>)
 
 ament_target_dependencies(align rclcpp Eigen3 lanelet2_core lanelet2_io lanelet2_projection)
@@ -107,8 +107,8 @@ add_library(rubber_sheeting SHARED
 
 target_include_directories(rubber_sheeting
   PUBLIC
-    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include/tum_lanelet2_osm_fusion>
-    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include/tum_lanelet2_osm_fusion/map_transformation>
+    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include/flexmap_fusion>
+    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include/flexmap_fusion/map_transformation>
     $<INSTALL_INTERFACE:include>)
 
 ament_target_dependencies(rubber_sheeting rclcpp geometry_msgs Eigen3 lanelet2_core lanelet2_io lanelet2_projection)
@@ -125,8 +125,8 @@ add_library(matching SHARED
 
 target_include_directories(matching
   PUBLIC
-    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include/tum_lanelet2_osm_fusion>
-    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include/tum_lanelet2_osm_fusion/conflation>
+    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include/flexmap_fusion>
+    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include/flexmap_fusion/conflation>
     $<INSTALL_INTERFACE:include>)
 
 ament_target_dependencies(matching rclcpp Eigen3 lanelet2_core lanelet2_io lanelet2_projection)
@@ -138,8 +138,8 @@ add_library(conflation SHARED
 
 target_include_directories(conflation
   PUBLIC
-    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include/tum_lanelet2_osm_fusion>
-    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include/tum_lanelet2_osm_fusion/conflation>
+    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include/flexmap_fusion>
+    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include/flexmap_fusion/conflation>
     $<INSTALL_INTERFACE:include>)
 
 ament_target_dependencies(conflation rclcpp Eigen3 lanelet2_core lanelet2_io lanelet2_projection)
@@ -154,8 +154,8 @@ add_library(message_conversion SHARED
 
 target_include_directories(message_conversion
   PUBLIC
-    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include/tum_lanelet2_osm_fusion>
-    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include/tum_lanelet2_osm_fusion/messages>
+    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include/flexmap_fusion>
+    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include/flexmap_fusion/messages>
     $<INSTALL_INTERFACE:include>)
 
 ament_target_dependencies(message_conversion rclcpp geometry_msgs visualization_msgs lanelet2_core lanelet2_io lanelet2_projection)
@@ -167,8 +167,8 @@ add_library(visualization SHARED
 # visualization
 target_include_directories(visualization
   PUBLIC
-    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include/tum_lanelet2_osm_fusion>
-    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include/tum_lanelet2_osm_fusion/messages>
+    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include/flexmap_fusion>
+    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include/flexmap_fusion/messages>
     $<INSTALL_INTERFACE:include>)
 
 ament_target_dependencies(visualization rclcpp geometry_msgs visualization_msgs lanelet2_core lanelet2_io lanelet2_projection)
@@ -180,8 +180,8 @@ add_library(messages SHARED
 # messages
 target_include_directories(messages
   PUBLIC
-    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include/tum_lanelet2_osm_fusion>
-    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include/tum_lanelet2_osm_fusion/messages>
+    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include/flexmap_fusion>
+    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include/flexmap_fusion/messages>
     $<INSTALL_INTERFACE:include>)
 
 target_link_libraries(messages message_conversion visualization ${PCL_LIBRARIES} ${message_filters_LIBRARIES} ${pcl_msgs_LIBRARIES})
@@ -197,8 +197,8 @@ add_library(analysis SHARED
 
 target_include_directories(analysis
   PUBLIC
-    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include/tum_lanelet2_osm_fusion>
-    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include/tum_lanelet2_osm_fusion/analysis>
+    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include/flexmap_fusion>
+    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include/flexmap_fusion/analysis>
     $<INSTALL_INTERFACE:include>)
 
 ament_target_dependencies(analysis rclcpp Eigen3 lanelet2_core lanelet2_io lanelet2_projection)
@@ -214,7 +214,7 @@ add_executable(lanelet2_osm
 
 target_include_directories(lanelet2_osm
   PUBLIC
-    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include/tum_lanelet2_osm_fusion>
+    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include/flexmap_fusion>
     $<INSTALL_INTERFACE:include>)
 
 ament_target_dependencies(lanelet2_osm rclcpp geometry_msgs visualization_msgs lanelet2_core lanelet2_io lanelet2_projection)
@@ -228,7 +228,7 @@ add_executable(kiss_icp_georef
 
 target_include_directories(kiss_icp_georef
   PUBLIC
-    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include/tum_lanelet2_osm_fusion>
+    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include/flexmap_fusion>
     $<INSTALL_INTERFACE:include>)
 
 ament_target_dependencies(kiss_icp_georef rclcpp geometry_msgs visualization_msgs lanelet2_core lanelet2_io lanelet2_projection)

@@ -31,7 +31,7 @@ from launch_ros.actions import Node
 
 def generate_launch_description():
     # Define path to config folder
-    config = os.path.join(get_package_share_directory("tum_lanelet2_osm_fusion"), "config")
+    config = os.path.join(get_package_share_directory("flexmap_fusion"), "config")
 
     # Define command line args
     traj_path = DeclareLaunchArgument(
@@ -57,7 +57,7 @@ def generate_launch_description():
     )
 
     lanelet2_osm_node = Node(
-        package="tum_lanelet2_osm_fusion",
+        package="flexmap_fusion",
         namespace="",
         executable="lanelet2_osm",
         name="lanelet2_osm",

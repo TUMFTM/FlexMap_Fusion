@@ -6,7 +6,7 @@ FROM ros:$ROS_DISTRO
 ARG DEBIAN_FRONTEND=noninteractive
 
 # Set working directory
-ENV PACKAGE_NAME=tum_lanelet2_osm_fusion
+ENV PACKAGE_NAME=flexmap_fusion
 
 # Install RViz and additional dependencies
 RUN apt-get update && apt-get install -y \
