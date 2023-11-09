@@ -1,1 +1,1 @@
-docker build -t FlexMap_Fusion:v1 .
+docker build -t flexmap_fusion:v1 .

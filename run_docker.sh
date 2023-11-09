@@ -6,5 +6,5 @@ docker run -it --rm \
     --privileged \
     # Mount your local directory to the container
     -v /your/local/directory:/workspace/data \
-    FlexMap_Fusion:v1
+    flexmap_fusion:v1
 xhost -
