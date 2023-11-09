@@ -1,1 +1,1 @@
-docker build -t tum_lanelet2_osm_fusion:v1 .
+docker build -t FlexMap_Fusion:v1 .

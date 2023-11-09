@@ -6,5 +6,5 @@ docker run -it --rm \
     --privileged \
     # Mount your local directory to the container
     -v /your/local/directory:/workspace/data \
-    tum_lanelet2_osm_fusion:v1
+    FlexMap_Fusion:v1
 xhost -
