@@ -5,7 +5,7 @@
 
     # Registration GPS/Poses
     align_num_inter_ume: 500          # Number of interpolation points for Umeyama method (algorithm needs equivalent number of points)
-    rs_num_controlPoints: 3          # Number of control points for rubber-sheeting
+    rs_num_controlPoints: 10          # Number of control points for rubber-sheeting
 
     # Pointcloud transformation
     transform_pcd: false              # transform corresponding point cloud map to laneletmap if osm selected as master (align and rubber-sheet, only 2D)

@@ -36,11 +36,11 @@ As the package is designed for use in combination with [Autoware](https://github
    ```
 3. Build the docker image
    ```bash
-   ./build_docker.sh
+   ./docker/build_docker.sh  
    ```
-4. Run the container and mount your data by adjusting the corresponding line (line 7) within ```run_docker.sh```
+4. Run the container and mount your data by appending the directory containing your data:
    ```bash
-   ./run_docker.sh
+   ./docker/run_docker.sh /your/local/directory/data
    ```
 </details>
 
@@ -145,6 +145,29 @@ As the package is designed for use in combination with [Autoware](https://github
 
    - Inspect results and modify parameters if desired.
 </details>
+
+* the parameter files for both executables are located in `/config`
+* see the comments within the single `.param.yaml`-files for detailed explanations on the parameters
+* to modify the parameters inside the container and view their current value, python-executables are provided:
+   * to view the current value of a parameter, run
+   ```bash
+      get_param_value.py <config_file_name> <param_name>
+   ```
+   inside the container. 
+   * to modify a parameter, run
+   ```bash
+      config_param.py <config_file_name> <param_name> <param_value> <param_type>
+   ```
+   inside the container. Supported parameter types are `str`, `int`, `float` and `bool`. See the current value for the right choice, otherwise the node will crash.
+   * Example:
+   Set amount of control points for rubber-sheeting:
+   ```bash
+      config_param.py lanelet2_osm.param.yaml rs_num_controlPoints 10 int
+   ```
+   Check effect:
+   ```bash
+      get_param.py lanelet2_osm.param.yaml rs_num_controlPoints
+   ```
 
 </details>
 
