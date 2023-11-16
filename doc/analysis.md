@@ -10,6 +10,10 @@
 - analysis scripts in `/analysis`
 
 ### 1. Analysis of Geometric Alignment
+- the script is on PATH of the docker container; you just need to specify where you saved the output data:
+```bash
+  plot_traj_matching.py /path/to/output/traj_matching
+```
 
 - visualization of [UTM-projection](https://apps.dtic.mil/sti/pdfs/ADA266497.pdf), [Umeyama transformation](https://web.stanford.edu/class/cs273/refs/umeyama.pdf) and [Rubber-Sheet transformation](https://www.tandfonline.com/doi/abs/10.1559/152304085783915135)
 - execute script `plot_traj_matching.py` in `/analysis`
@@ -36,6 +40,10 @@ u = \frac{(\vec{b} - \vec{a}) \cdot (\vec{p} - \vec{a})}{\|\vec{b} - \vec{a}\|}
 - note that this produces falsified results near intersections of the trajectories
 
 ### 2. Analysis of Matching/Conflation
+- the script is on PATH of the docker container; you just need to specify where you saved the output data:
+```bash
+  plot_matching.py /path/to/output/matching
+```
 
 - command window
   - matching statistics shown in command window during execution indicate
@@ -62,7 +70,6 @@ u = \frac{(\vec{b} - \vec{a}) \cdot (\vec{p} - \vec{a})}{\|\vec{b} - \vec{a}\|}
   - identification of false negatives by manual investigation (use module `identify_fn()` inside `plot_matching.py`)
 
 ### 3. Analysis of Georeferencing
-
 - visualize lanelet map and GNSS trajectory in comparison to orthophoto
 - orthophotos from Bavaria available on [OPENDATA](https://geodaten.bayern.de/opengeodata/OpenDataDetail.html?pn=dop40)
 - orthophotos are rectified in UTM32 (EPSG:25832) coordinates and have a size of 1km x 1km each

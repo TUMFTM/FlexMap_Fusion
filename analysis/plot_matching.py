@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 # Copyright 2023 Maximilian Leitenstern
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -17,6 +18,7 @@
 # Date: 21.03.2023
 # ========================================== //
 #
+import sys
 import matplotlib.pyplot as plt
 import numpy as np
 from utility import TUMcolor
@@ -27,9 +29,7 @@ from utility import set_params
 
 
 class matching:
-    def __init__(self):
-        dir_path = "/home/maximilian/Documents/gitlab/autoware/output/matching"
-
+    def __init__(self, dir_path):
         # Read files
         self.reference = load_file_man(dir_path, "reference_plines.txt", " ")
         self.target = load_file_man(dir_path, "target_plines.txt", " ")
@@ -49,7 +49,7 @@ class matching:
 
     # Plot matching results with lanelets and osm road network
     def plot_matching(self):
-        set_params()
+        # set_params()
         plt.figure(figsize=(8.5, 6))
         ax = plt.gca()
         cols = [
@@ -162,7 +162,7 @@ class matching:
     # with the whole osm road network => user investigates if it is a false negative =>
     # close the plot => answer the prompt)
     def identify_fn(self):
-        set_params()
+        # set_params()
         # Get indices of non-matches (score = 0) that are longer than the threshold
         ind_ref_pline = np.where(self.lenRefPline >= 1.5)
         self.reference_fil = self.reference[ind_ref_pline]
@@ -210,7 +210,7 @@ class matching:
 
     # Plot the length of the reference polylines over the amount of matches
     def plot_len_ref_pline(self):
-        set_params()
+        # set_params()
         ax = plt.axes()
         ax.plot(
             range(1, len(self.lenRefPline), 1),
@@ -225,7 +225,7 @@ class matching:
 
     # Plot geometric similarity measures over matches
     def plot_geo_measures(self):
-        set_params()
+        # set_params()
         # Angles
         ax = plt.axes()
         ax.plot(
@@ -351,12 +351,19 @@ class matching:
 
 # Main function - comment and uncomment functions you want to use
 if __name__ == "__main__":
+    # Check command-line arguments
+    if len(sys.argv) != 2:
+        print("Usage: plot_matching.py <path/to/output/matching>")
+        sys.exit(1)
+
+    # Get command-line arguments
+    dir_path = sys.argv[1]
     # Init
-    matching_ = matching()
+    matching_ = matching(dir_path)
     matching_.plot_matching()
     # matching_.identify_fn()
-    # matching_.plot_len_ref_pline()
-    # matching_.plot_geo_measures()
-    # matching_.print_statistics()
+    matching_.plot_len_ref_pline()
+    matching_.plot_geo_measures()
+    matching_.print_statistics()
 
     plt.show()
