@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 # Copyright 2023 Maximilian Leitenstern
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -52,7 +53,7 @@ class georef:
 
     # Plot georeferenced map on orthophoto
     def plot_georef(self):
-        set_params()
+        # set_params()
         plt.figure(figsize=(8.5, 6))
 
         ax = plt.gca()

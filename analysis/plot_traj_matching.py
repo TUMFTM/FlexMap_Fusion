@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 # Copyright 2023 Maximilian Leitenstern
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -17,6 +18,7 @@
 # Date: 21.03.2023
 # ========================================== //
 #
+import sys
 from matplotlib.collections import LineCollection
 import matplotlib.font_manager as font_manager
 import matplotlib.pyplot as plt
@@ -27,9 +29,7 @@ from utility import set_params
 
 
 class traj_diff:
-    def __init__(self):
-        dir_path = "/home/maximilian/Documents/gitlab/autoware/output/traj_matching"
-
+    def __init__(self, dir_path):
         # Read files
         self.source = load_file(dir_path, "source.txt", " ")
         self.target = load_file(dir_path, "target.txt", " ")
@@ -42,7 +42,7 @@ class traj_diff:
 
     # Plot initial trajectories in local coordinate system
     def plot_traj(self):
-        set_params()
+        # set_params()
         font = font_manager.FontProperties(family="Arial", style="normal", size=11)
         ax = plt.axes()
         ax.plot(
@@ -67,7 +67,7 @@ class traj_diff:
 
     # Plot trajectories after rigid transformation with deviation
     def plot_traj_al(self):
-        set_params()
+        # set_params()
         font = font_manager.FontProperties(family="Arial", style="normal", size=11)
         fig = plt.figure()
         ax = plt.axes()
@@ -98,7 +98,7 @@ class traj_diff:
 
     # Plot trajectories after rubber-sheet transformation with deviation
     def plot_traj_rs(self):
-        set_params()
+        # set_params()
         font = font_manager.FontProperties(family="Arial", style="normal", size=11)
         fig = plt.figure()
         ax = plt.axes()
@@ -125,13 +125,11 @@ class traj_diff:
         ax.legend(prop=font)
         ax.grid()
         ax.set_aspect("equal")
-        ax.set_xlim(-1800, -1500)
-        ax.set_ylim(-500, -50)
         plt.show()
 
     # Plot geometry of rubber-sheet transformation (triangles, control points)
     def plot_geom_rs(self):
-        set_params()
+        # set_params()
         font = font_manager.FontProperties(family="Arial", style="normal", size=11)
         ax = plt.axes()
         ax.plot(
@@ -165,8 +163,6 @@ class traj_diff:
         ax.legend(loc="upper left", prop=font)
         ax.grid()
         ax.set_aspect("equal")
-        ax.set_xlim(-1800, -1500)
-        ax.set_ylim(-500, -50)
         plt.show()
 
     # Statistical values on deviations
@@ -186,13 +182,20 @@ class traj_diff:
 
 # Main function - comment and uncomment functions you want to use
 if __name__ == "__main__":
-    # Init
-    traj = traj_diff()
+        # Check command-line arguments
+    if len(sys.argv) != 2:
+        print("Usage: plot_traj_matching.py <path/to/output/traj_matching>")
+        sys.exit(1)
 
-    # traj.plot_traj()
-    # traj.plot_traj_al()
-    # traj.plot_traj_rs()
-    # traj.plot_geom_rs()
+    # Get command-line arguments
+    dir_path = sys.argv[1]
+    # Init
+    traj = traj_diff(dir_path)
+
+    traj.plot_traj()
+    traj.plot_traj_al()
+    traj.plot_traj_rs()
+    traj.plot_geom_rs()
     traj.print_statistics()
 
     plt.show()
