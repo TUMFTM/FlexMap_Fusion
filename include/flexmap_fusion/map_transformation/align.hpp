@@ -30,7 +30,6 @@
 #include <lanelet2_core/primitives/Lanelet.h>
 #include <lanelet2_core/primitives/LineString.h>
 #include <lanelet2_core/primitives/Point.h>
-#include <pcl/io/pcd_io.h>
 
 #include <string>
 #include <vector>

@@ -163,9 +163,9 @@ void calign::get_intersection_nodes(
   int is_intersection = 0;
 
   // Iterate throughh ls and check Ids
-  for (const auto ls : osm_ls) {
-    for (const auto point : ls) {
-      for (const auto ls_pt : ls_pts) {
+  for (const auto & ls : osm_ls) {
+    for (const auto & point : ls) {
+      for (const auto & ls_pt : ls_pts) {
         if (point.id() == ls_pt.id()) {
           is_intersection = 1;
         }

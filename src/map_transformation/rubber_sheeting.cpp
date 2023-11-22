@@ -72,7 +72,7 @@ bool crubber_sheeting::select_control_points(
 
     // Create subscription and wait for point message
     auto sub = node.create_subscription<geometry_msgs::msg::PointStamped>(
-      "clicked_point", 1, [](const std::shared_ptr<geometry_msgs::msg::PointStamped>) {});
+      "clicked_point", 1, [](const std::shared_ptr<const geometry_msgs::msg::PointStamped>) {});
     bool received_msg = rclcpp::wait_for_message(msg, sub, node.get_node_options().context());
 
     // Convert message to lanelet point and write in array
@@ -203,6 +203,7 @@ bool crubber_sheeting::transform_pcd(
             << " points: Loaded!\033[0m" << std::endl;
 
   // Transform points and write into output cloud
+  pcl::PointIndices::Ptr outliers(new pcl::PointIndices());
   int ind_pt = 0;
   for (const auto & point : *pcm) {
     // Align point with alignment transformation matrix
@@ -225,8 +226,17 @@ bool crubber_sheeting::transform_pcd(
       }
       ++i;
     }
+    // Add index of point to list for later filtering if not inside a triangle
+    if (i >= static_cast<int>(tri.size())) {
+      outliers->indices.push_back(ind_pt);
+    }
     ++ind_pt;
   }
+  pcl::ExtractIndices<pcl::PointXYZ> extract;
+  extract.setInputCloud(pcm);
+  extract.setIndices(outliers);
+  extract.setNegative(true);
+  extract.filter(*pcm);
 
   // write to file
   if (node.get_parameter("save_ascii").as_bool()) {
@@ -245,12 +255,14 @@ bool crubber_sheeting::transform_pcd(
   rclcpp::Node & node, const lanelet::Areas & tri, const std::vector<Eigen::Matrix3d> & trans,
   const Eigen::Matrix3d & trans_al, pcl::PointCloud<pcl::PointXYZ>::Ptr & pcm)
 {
+  (void)node;
   // Check if the input pointer is valid
   if (!pcm) {
     return false;
   }
 
   // Transform points and write into output cloud
+  pcl::PointIndices::Ptr outliers(new pcl::PointIndices());
   int ind_pt = 0;
   for (const auto & point : *pcm) {
     // Align point with alignment transformation matrix
@@ -273,8 +285,18 @@ bool crubber_sheeting::transform_pcd(
       }
       ++i;
     }
+    // Add index of point to list for later filtering if not inside a triangle
+    if (i >= static_cast<int>(tri.size())) {
+      outliers->indices.push_back(ind_pt);
+    }
     ++ind_pt;
   }
+  pcl::ExtractIndices<pcl::PointXYZ> extract;
+  extract.setInputCloud(pcm);
+  extract.setIndices(outliers);
+  extract.setNegative(true);
+  extract.filter(*pcm);
+
   return true;
 }
 
@@ -317,10 +339,10 @@ lanelet::Area crubber_sheeting::enclosing_rectangle(const lanelet::ConstLineStri
   double min_y = *std::min_element(y.begin(), y.end());
   double max_y = *std::max_element(y.begin(), y.end());
 
-  // Get 5% of size of rectangle
+  // Get 10% of size of rectangle
   double dx, dy;
-  dx = 0.05 * std::abs(max_x - min_x);
-  dy = 0.05 * std::abs(max_y - min_y);
+  dx = 0.1 * std::abs(max_x - min_x);
+  dy = 0.1 * std::abs(max_y - min_y);
 
   // Define area
   lanelet::Point3d bottom_left{lanelet::utils::getId(), min_x - dx, min_y - dy, 0.0};
