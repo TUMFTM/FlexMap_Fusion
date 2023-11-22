@@ -692,7 +692,7 @@ void cmatching::extend_ref_pline(
     lanelet::LineStrings3d ls_angles;
     lanelet::LineString3d pline_seg = (dir == 1) ? pline.back() : pline.front();
     // Calculate angle between potential new segment and current pline segment
-    for (const auto ls_ : connected) {
+    for (const auto & ls_ : connected) {
       if (!used_Id(ids, ls_)) {
         angles.push_back(std::abs(angle_segment(pline_seg, ls_, false)));
         ls_angles.push_back(ls_);

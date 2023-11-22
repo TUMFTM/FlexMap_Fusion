@@ -25,6 +25,7 @@
 #include <lanelet2_io/Io.h>
 #include <lanelet2_projection/UTM.h>
 #include <pcl/io/pcd_io.h>
+#include <pcl/point_types.h>
 
 #include <string>
 #include <vector>

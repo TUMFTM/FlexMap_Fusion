@@ -85,7 +85,7 @@ bool cfile_in::read_traj_GPS_from_file(
     orig_lon = traj_GPS[0].lon;
   }
 
-  std::cout << "OUTPUT: " << orig_lat << " " << orig_lon << std::endl;
+  std::cout << "\033[33mMap origin: " << orig_lat << " " << orig_lon << "\033[0m" << std::endl;
 
   // Calculate boundaries of map piece
   double max_lat, max_lon, min_lat, min_lon;

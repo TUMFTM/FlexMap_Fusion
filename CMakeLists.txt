@@ -7,14 +7,16 @@ if(NOT CMAKE_CXX_STANDARD)
 endif()
 
 if(CMAKE_COMPILER_IS_GNUCXX OR CMAKE_CXX_COMPILER_ID MATCHES "Clang")
-  add_compile_options(-Wall -Wextra -Wpedantic)
+  add_compile_options(-Wall -Wextra -Wpedantic -Wno-unused-local-typedefs)
 endif()
+
+add_definitions("-DBOOST_ALLOW_DEPRECATED_HEADERS")
+add_definitions("-DBOOST_BIND_GLOBAL_PLACEHOLDERS")
 
 # find dependencies
 find_package(ament_cmake REQUIRED)
 find_package(geometry_msgs REQUIRED)
-find_package(message_filters REQUIRED)
-find_package(pcl_msgs REQUIRED)
+find_package(pcl_conversions REQUIRED)
 find_package(visualization_msgs REQUIRED)
 find_package(sensor_msgs REQUIRED)
 find_package(rclcpp REQUIRED)
@@ -23,15 +25,14 @@ find_package(Eigen3 REQUIRED)
 find_package(lanelet2_core REQUIRED)
 find_package(lanelet2_io REQUIRED)
 find_package(lanelet2_projection REQUIRED)
-find_package(PCL 1.3 REQUIRED)
 
-include_directories(${pcl_msgs_INCLUDE_DIRS})
-include_directories(${message_filters_INCLUDE_DIRS})
-include_directories(${PCL_INCLUDE_DIRS})
-link_directories(${PCL_LIBRARY_DIRS})
-add_definitions(${PCL_DEFINITIONS})
+find_package(PCL REQUIRED)
 
 file(MAKE_DIRECTORY lib)
+
+include_directories(SYSTEM
+  ${PCL_INCLUDE_DIRS}
+)
 
 ####################################
 # file_in
@@ -184,8 +185,8 @@ target_include_directories(messages
     $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include/flexmap_fusion/messages>
     $<INSTALL_INTERFACE:include>)
 
-target_link_libraries(messages message_conversion visualization ${PCL_LIBRARIES} ${message_filters_LIBRARIES} ${pcl_msgs_LIBRARIES})
-ament_target_dependencies(messages rclcpp geometry_msgs visualization_msgs lanelet2_core lanelet2_io lanelet2_projection)
+target_link_libraries(messages message_conversion visualization ${PCL_LIBRARIES})
+ament_target_dependencies(messages rclcpp geometry_msgs visualization_msgs pcl_conversions lanelet2_core lanelet2_io lanelet2_projection)
 
 ####################################
 # analysis
