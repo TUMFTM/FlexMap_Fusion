@@ -226,11 +226,13 @@ Germany
 If you use this repository for any academic work, please cite our original paper:
 
 ```bibtex
-@inproceedings{sauerbeck2023,
-  title={Multi-LiDAR Localization and Mapping Pipeline for Urban Autonomous Driving},
-  author={\textbf{Sauerbeck, Florian} and Kulmer, Dominik and Leitenstern, Maximilian and Weiss, Christoph and Betz, Johannes},
-  booktitle={2023 IEEE Sensors},
-  year={2023},
+@misc{leitenstern2024flexmap,
+      title={FlexMap Fusion: Georeferencing and Automated Conflation of HD Maps with OpenStreetMap}, 
+      author={Maximilian Leitenstern and Florian Sauerbeck and Dominik Kulmer and Johannes Betz},
+      year={2024},
+      eprint={2404.10879},
+      archivePrefix={arXiv},
+      primaryClass={cs.RO}
 }
 ```
 </details>
