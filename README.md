@@ -17,6 +17,10 @@
    * modular expandability to include additional semantic information
    * possibility to apply georeferencing step on the point cloud map resulting from the SLAM process and used for the generation of the lanelet map
    * extensive visualization within RVIZ2
+
+> [!NOTE]  
+> If you're more interested in georeferencing a 3D pointcloud map, check out [FlexCloud](https://github.com/TUMFTM/FlexCloud), a further development of the georeferencing stage supporting fast 2D and 3D rubber-sheeting with Delauny-Triangulations.
+
 <details>
 <summary> <h2> 🐋 Docker Setup </h2> </summary>
 
